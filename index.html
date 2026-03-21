@@ -2,584 +2,235 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <title>Controle de Despesas</title>
+  <title>Controle Financeiro - Compact</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
   <style>
     * { box-sizing: border-box; }
-    body {
-      font-family: 'Inter', Arial, sans-serif;
-      margin: 15px;
-      background: #f5f5f5;
-      color: #333;
-    }
-    .app {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 20px;
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    }
-    h1, h2 { text-align: center; color: #333; margin: 10px 0; }
-    h1 { font-size: 24px; }
-    #status-sync {
-      text-align: center;
-      font-size: 13px;
-      color: #777;
-      margin: 10px 0;
-    }
-    form {
-      margin-bottom: 20px;
-      background: #f9f9f9;
-      padding: 18px;
-      border-radius: 10px;
-    }
-    .form-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-    .form-row > div {
-      flex: 1 1 200px;
-    }
-    label {
-      display: block;
-      margin-bottom: 5px;
-      font-size: 14px;
-      font-weight: 500;
-      color: #555;
-    }
-    input, button, select {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      font-size: 14px;
-    }
-    button[type="submit"] {
-      background: #007bff;
-      color: white;
-      border: none;
-      font-weight: 500;
-    }
-    button[type="submit"]:hover {
-      background: #0056b3;
-    }
-    .filter-container {
-      text-align: center;
-      margin: 15px 0;
-    }
-    .filter-container input {
-      width: auto;
-      display: inline-block;
-      font-size: 14px;
-    }
-    .filter-container button {
-      font-size: 14px;
-      padding: 8px 12px;
-      background: #6c757d;
-      color: white;
-      border: none;
-    }
-    .resumo {
-      text-align: center;
-      margin: 15px 0;
-      padding: 12px;
-      background: #e7f3ff;
-      border-radius: 8px;
-      font-weight: 500;
-      color: #004085;
-      font-size: 15px;
-    }
-    #carregando {
-      text-align: center;
-      padding: 20px;
-      color: #007bff;
-      font-style: italic;
-    }
-    .despesa, .parcela {
-      background: #fff;
-      margin: 8px 0;
-      padding: 12px;
-      border-radius: 10px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    }
-    .despesa {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-    .despesa-actions {
-      align-self: flex-end;
-    }
-    .parcela {
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 14px;
-    }
-    .parcela.paga {
-      text-decoration: line-through;
-      color: green;
-      background: #f0f8f0;
-    }
-    .total {
-      font-weight: bold;
-      color: #d9534f;
-    }
-    .excluir-btn {
-      background: #d9534f !important;
-      color: white;
-      padding: 6px 10px;
-      font-size: 13px;
-    }
-    .msg {
-      text-align: center;
-      padding: 10px;
-      border-radius: 8px;
-      margin: 10px 0;
-      font-style: italic;
-      font-size: 14px;
-    }
-    .msg.success {
-      background: #d4edda;
-      color: #155724;
-      border: 1px solid #c3e6cb;
-    }
-    .msg.warning {
-      background: #fff3cd;
-      color: #856404;
-      border: 1px solid #ffeaa7;
-    }
-    .app-actions {
-      text-align: center;
-      margin: 20px 0;
-    }
-    .app-actions button {
-      margin: 0 8px;
-      padding: 10px 16px;
-      font-size: 14px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-    .btn-secondary {
-      background: #6c757d;
-      color: white;
-    }
-    .btn-secondary:hover {
-      background: #5a6268;
-    }
-    @media (max-width: 600px) {
-      body { margin: 10px; }
-      .app { padding: 15px; }
-      h1 { font-size: 20px; }
-      form { padding: 15px; }
-      .form-row > div { flex: 1 1 100%; }
-      .parcela {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 6px;
-      }
-      .parcela button {
-        align-self: flex-start;
-        margin-top: 4px;
-      }
-      .app-actions {
-        flex-direction: column;
-        gap: 10px;
-      }
-      .app-actions button {
-        margin: 0;
-      }
-    }
+    body { font-family: 'Inter', sans-serif; margin: 10px; background: #f4f7f9; color: #333; }
+    .app { max-width: 500px; margin: 0 auto; padding: 15px; background: white; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+    
+    h1 { text-align: center; font-size: 20px; color: #1a73e8; margin-bottom: 15px; }
+
+    /* Formulário Compacto */
+    form { background: #f8f9fa; padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid #eee; }
+    .form-group { margin-bottom: 10px; }
+    label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 4px; }
+    input { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; }
+    .btn-submit { background: #1a73e8; color: white; border: none; padding: 10px; border-radius: 6px; width: 100%; cursor: pointer; font-weight: 600; }
+    .btn-cancel { background: #6c757d; color: white; border: none; padding: 6px; border-radius: 6px; width: 100%; margin-top: 5px; display: none; cursor: pointer; }
+
+    /* Calendário Mini */
+    .mini-calendar { border: 1px solid #eee; border-radius: 10px; overflow: hidden; margin-bottom: 15px; background: #fff; }
+    .cal-header { display: flex; justify-content: space-between; align-items: center; background: #1a73e8; color: white; padding: 8px; font-size: 13px; }
+    .cal-header button { background: none; border: none; color: white; cursor: pointer; font-weight: bold; }
+    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-size: 11px; }
+    .cal-day-name { background: #f1f3f4; padding: 5px 0; font-weight: 600; }
+    .cal-num { padding: 6px 0; border-bottom: 1px solid #f9f9f9; position: relative; }
+    .has-event::after { content: ''; position: absolute; bottom: 3px; left: 50%; transform: translateX(-50%); width: 4px; height: 4px; background: #1a73e8; border-radius: 50%; }
+    .cal-today { background: #e8f0fe; color: #1a73e8; font-weight: bold; border-radius: 4px; }
+
+    /* Lista de Despesas */
+    .expense-list { margin-top: 15px; }
+    .expense-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid #eee; background: white; transition: 0.2s; }
+    .expense-item.pago { opacity: 0.6; }
+    .expense-info { flex-grow: 1; }
+    .expense-info span { display: block; font-size: 14px; font-weight: 500; }
+    .expense-info small { color: #777; font-size: 11px; }
+    .expense-actions { display: flex; gap: 8px; }
+    .expense-actions button { border: none; background: #f0f2f5; padding: 6px; border-radius: 5px; cursor: pointer; font-size: 12px; }
+    .btn-pay { color: #34a853; }
+    .btn-del { color: #ea4335; }
+
+    .resumo { display: flex; gap: 10px; margin-bottom: 15px; }
+    .resumo-card { flex: 1; padding: 10px; border-radius: 8px; text-align: center; font-size: 12px; }
+    .resumo-card.p { background: #fff3cd; color: #856404; }
+    .resumo-card.ok { background: #d4edda; color: #155724; }
   </style>
 </head>
 <body>
-  <div class="app">
-    <h1>Controle de Despesas</h1>
-    <div id="status-sync">⏳ Carregando...</div>
 
-    <form id="form">
-      <div class="form-row">
-        <div>
-          <label for="desc">Descrição</label>
-          <input type="text" id="desc" placeholder="Ex: Assinatura" required />
-        </div>
-        <div>
-          <label for="valorParcela">Valor (R$)</label>
-          <input type="number" id="valorParcela" step="0.01" placeholder="50.00" required />
-        </div>
-      </div>
-      <div class="form-row">
-        <div>
-          <label for="parcelas">Parcelas</label>
-          <input type="number" id="parcelas" value="1" min="1" max="99" />
-        </div>
-        <div>
-          <label for="data">1ª Parcela</label>
-          <input type="date" id="data" required />
-        </div>
-      </div>
-      <button type="submit">Adicionar Despesa</button>
-    </form>
+<div class="app">
+  <h1>Meu Financeiro</h1>
 
-    <div class="filter-container">
-      <label for="filtroMes">Filtrar por mês:</label>
-      <input type="month" id="filtroMes" />
-      <button onclick="limparFiltro()">Limpar</button>
+  <form id="form-despesa">
+    <div class="form-group"><label>Descrição</label><input type="text" id="desc" required /></div>
+    <div style="display:flex; gap:10px">
+      <div class="form-group" style="flex:1"><label>Valor R$</label><input type="number" id="valor" step="0.01" required /></div>
+      <div class="form-group" style="flex:1"><label>Parcelas</label><input type="number" id="qtd" value="1" /></div>
     </div>
+    <div class="form-group"><label>Data 1ª Parcela</label><input type="date" id="dataBase" required /></div>
+    <button type="submit" class="btn-submit" id="btn-save">Salvar</button>
+    <button type="button" class="btn-cancel" id="btn-cancel" onclick="window.cancelarEdicao()">Cancelar</button>
+  </form>
 
-    <div id="carregando">Carregando suas despesas...</div>
-    <div class="resumo" id="resumo">Carregando...</div>
+  <div class="resumo" id="resumo"></div>
 
-    <h2>Despesas</h2>
-    <div id="lista"></div>
+  <div class="mini-calendar" id="calendar"></div>
 
-    <div class="app-actions">
-      <button onclick="exportarParaExcel()" class="btn-secondary">Exportar Excel</button>
-      <button onclick="logout()" class="excluir-btn">Sair</button>
-    </div>
+  <div class="expense-list" id="expense-list">
+    <h3 style="font-size: 14px; margin-bottom: 10px;">Contas do Mês</h3>
+    <div id="items-container"></div>
   </div>
 
-  <script type="module">
-    if (!localStorage.getItem("userLoggedIn")) {
-      window.location.href = "login.html";
+  <button onclick="window.logout()" style="width:100%; margin-top:20px; border:none; background:none; color:#ea4335; cursor:pointer; font-size:12px">Sair do Sistema</button>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc, updateDoc, query, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAjgQTdQmo63-0mR8k1bVYsY0E8I7Iqbnk",
+    authDomain: "will-gasto.firebaseapp.com",
+    projectId: "will-gasto",
+    storageBucket: "will-gasto.firebasestorage.app",
+    messagingSenderId: "436819384776",
+    appId: "1:436819384776:web:37c4c1173c543c0d1dc8fd"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const auth = getAuth(app);
+
+  let despesas = [];
+  let editId = null;
+  let mesRef = new Date().toISOString().slice(0, 7);
+
+  onAuthStateChanged(auth, (user) => {
+    if (!user) { window.location.href = "login.html"; return; }
+    const q = query(collection(db, "despesas"), where("userId", "==", user.uid));
+    onSnapshot(q, (snap) => {
+      despesas = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      renderAll();
+    });
+  });
+
+  function renderAll() {
+    renderCalendar();
+    renderList();
+  }
+
+  function renderCalendar() {
+    const [ano, mes] = mesRef.split('-').map(Number);
+    const prim = new Date(ano, mes-1, 1).getDay();
+    const ult = new Date(ano, mes, 0).getDate();
+    const diasComGasto = despesas.flatMap(d => d.parcelas.map(p => p.date))
+                                 .filter(d => d.startsWith(mesRef))
+                                 .map(d => parseInt(d.split('-')[2]));
+
+    let html = `
+      <div class="cal-header">
+        <button onclick="window.mudarMes(-1)">❮</button>
+        <span>${new Date(ano, mes-1).toLocaleDateString('pt-BR', {month:'short', year:'numeric'}).toUpperCase()}</span>
+        <button onclick="window.mudarMes(1)">❯</button>
+      </div>
+      <div class="cal-grid">
+        <div class="cal-day-name">D</div><div class="cal-day-name">S</div><div class="cal-day-name">T</div>
+        <div class="cal-day-name">Q</div><div class="cal-day-name">Q</div><div class="cal-day-name">S</div><div class="cal-day-name">S</div>`;
+    
+    for(let i=0; i<prim; i++) html += `<div></div>`;
+    for(let d=1; d<=ult; d++) {
+      const isHoje = new Date().toISOString().slice(0,10) === `${ano}-${String(mes).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+      const temGasto = diasComGasto.includes(d);
+      html += `<div class="cal-num ${isHoje?'cal-today':''} ${temGasto?'has-event':''}">${d}</div>`;
     }
+    document.getElementById('calendar').innerHTML = html + `</div>`;
+  }
 
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { 
-      getFirestore, 
-      collection, 
-      addDoc, 
-      onSnapshot, 
-      deleteDoc, 
-      doc, 
-      updateDoc 
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  function renderList() {
+    const container = document.getElementById('items-container');
+    container.innerHTML = '';
+    let p=0, ok=0;
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyBQMZg_PyiXZ0dRZK7q7ELdmnmXJZRKQu4",
-      authDomain: "financia-1.firebaseapp.com",
-      projectId: "financia-1",
-      storageBucket: "financia-1.firebasestorage.app",
-      messagingSenderId: "744474080905",
-      appId: "1:744474080905:web:a72d939b44ea7878c0b858"
-    };
+    const parcelasMes = despesas.flatMap(d => d.parcelas.map(p => ({...p, desc: d.desc, dId: d.id})))
+                                .filter(p => p.date.startsWith(mesRef))
+                                .sort((a,b) => a.date.localeCompare(b.date));
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const auth = getAuth(app);
-    const despesasCollection = collection(db, "despesas");
-
-    let despesas = [];
-    let scriptCarregado = false;
-
-    function salvarLocal(despesas) {
-      try {
-        const dados = {
-          despesas,
-          timestamp: Date.now(),
-          userId: auth.currentUser?.uid
-        };
-        localStorage.setItem("despesasCache", JSON.stringify(dados));
-      } catch (e) {
-        console.warn("Erro ao salvar no localStorage", e);
-      }
-    }
-
-    function carregarLocal() {
-      try {
-        const dados = localStorage.getItem("despesasCache");
-        if (!dados) return null;
-        const parsed = JSON.parse(dados);
-        const userUid = auth.currentUser?.uid;
-        if (!userUid || parsed.userId !== userUid) return null;
-        const umaSemana = 7 * 24 * 60 * 60 * 1000;
-        if (Date.now() - parsed.timestamp < umaSemana) {
-          return parsed.despesas;
-        }
-        return null;
-      } catch (e) {
-        console.warn("Erro ao ler localStorage", e);
-        return null;
-      }
-    }
-
-    function setStatus(msg, cor = "#777") {
-      const el = document.getElementById("status-sync");
-      if (el) el.textContent = msg, el.style.color = cor;
-    }
-
-    function verificarVencidas() {
-      const hoje = new Date();
-      hoje.setHours(0, 0, 0, 0);
-
-      const vencidas = despesas.flatMap(d => d.parcelas)
-        .filter(p => !p.paid)
-        .filter(p => new Date(p.date) < hoje);
-
-      if (vencidas.length > 0) {
-        const msg = document.createElement("div");
-        msg.className = "msg warning";
-        msg.textContent = `⚠️ Você tem ${vencidas.length} parcela(s) vencida(s)!`;
-        const lista = document.getElementById("lista");
-        lista.parentNode.insertBefore(msg, lista);
-        setTimeout(() => msg.remove(), 5000);
-      }
-    }
-
-    onAuthStateChanged(auth, (user) => {
-      if (user && user.emailVerified) {
-        const cache = carregarLocal();
-        if (cache) {
-          despesas = cache;
-          render();
-          atualizarResumo();
-          verificarVencidas();
-          document.getElementById("carregando").textContent = "🔄 Sincronizando com a nuvem...";
-          setStatus("🔄 Usando cache local", "#f39c12");
-        }
-
-        onSnapshot(despesasCollection, (snapshot) => {
-          const novasDespesas = [];
-          snapshot.forEach(doc => {
-            const data = doc.data();
-            if (data.userId === user.uid) {
-              novasDespesas.push({ id: doc.id, ...data });
-            }
-          });
-          despesas = novasDespesas;
-          salvarLocal(despesas);
-          document.getElementById("carregando").style.display = "none";
-          render();
-          atualizarResumo();
-          verificarVencidas();
-          setStatus("✅ Sincronizado com a nuvem", "#27ae60");
-        }, (error) => {
-          setStatus("⚠️ Offline (usando cache)", "#e67e22");
-          if (cache) verificarVencidas();
-        });
-      } else {
-        window.location.href = "login.html";
-      }
+    parcelasMes.forEach(item => {
+      item.paid ? ok += item.value : p += item.value;
+      container.innerHTML += `
+        <div class="expense-item ${item.paid?'pago':''}">
+          <div class="expense-info">
+            <span>${item.desc}</span>
+            <small>${item.date.split('-').reverse().join('/')} • Parcela ${item.num}/${item.total}</small>
+            <strong style="font-size:13px">R$ ${item.value.toFixed(2)}</strong>
+          </div>
+          <div class="expense-actions">
+            ${!item.paid ? `<button class="btn-pay" onclick="window.pagar('${item.dId}','${item.id}')">✔</button>` : ''}
+            <button onclick="window.editar('${item.dId}')">✏</button>
+            <button class="btn-del" onclick="window.excluir('${item.dId}')">🗑</button>
+          </div>
+        </div>`;
     });
 
-    function formatDate(date) {
-      return new Date(date).toLocaleDateString("pt-BR");
-    }
+    document.getElementById('resumo').innerHTML = `
+      <div class="resumo-card p">Pendente<br><b>R$ ${p.toFixed(2)}</b></div>
+      <div class="resumo-card ok">Pago<br><b>R$ ${ok.toFixed(2)}</b></div>`;
+  }
 
-    function uid() {
-      return "_" + Date.now() + "_" + Math.random().toString(36).substr(2, 6);
-    }
+  window.mudarMes = (n) => {
+    const [ano, mes] = mesRef.split('-').map(Number);
+    mesRef = new Date(ano, (mes-1)+n, 1).toISOString().slice(0,7);
+    renderAll();
+  };
 
-    window.pagarParcela = async function (despesaId, parcelaId) {
-      const d = despesas.find(x => x.id === despesaId);
-      if (!d) return;
-      const p = d.parcelas.find(x => x.id === parcelaId);
-      if (p && !p.paid) {
-        p.paid = true;
-        try {
-          await updateDoc(doc(db, "despesas", despesaId), { parcelas: d.parcelas });
-        } catch (error) {
-          alert("Erro ao atualizar: " + error.message);
-        }
-      }
-    };
+  window.pagar = async (dId, pId) => {
+    const d = despesas.find(x => x.id === dId);
+    const novas = d.parcelas.map(p => p.id === pId ? {...p, paid: true} : p);
+    await updateDoc(doc(db, "despesas", dId), { parcelas: novas });
+  };
 
-    window.excluirDespesa = async function (despesaId) {
-      if (confirm("Excluir esta despesa?")) {
-        try {
-          await deleteDoc(doc(db, "despesas", despesaId));
-        } catch (error) {
-          alert("Erro ao excluir: " + error.message);
-        }
-      }
-    };
+  window.excluir = async (id) => { if(confirm("Excluir?")) await deleteDoc(doc(db, "despesas", id)); };
 
-    function atualizarResumo() {
-      const total = despesas.flatMap(d => d.parcelas)
-        .filter(p => !p.paid)
-        .reduce((sum, p) => sum + parseFloat(p.value), 0);
-      document.getElementById("resumo").innerHTML = `
-        <strong>Total em aberto:</strong> R$ ${total.toFixed(2)}
-      `;
-    }
+  window.editar = (id) => {
+    const d = despesas.find(x => x.id === id);
+    editId = id;
+    document.getElementById('desc').value = d.desc;
+    document.getElementById('valor').value = d.parcelas[0].value;
+    document.getElementById('qtd').value = d.parcelas.length;
+    document.getElementById('dataBase').value = d.parcelas[0].date;
+    document.getElementById('btn-save').textContent = "Atualizar";
+    document.getElementById('btn-cancel').style.display = "block";
+    window.scrollTo(0,0);
+  };
 
-    function render() {
-      const filtroMes = document.getElementById("filtroMes")?.value;
-      const lista = document.getElementById("lista");
-      if (!lista) return;
-      lista.innerHTML = "";
+  window.cancelarEdicao = () => {
+    editId = null;
+    document.getElementById('form-despesa').reset();
+    document.getElementById('btn-save').textContent = "Salvar";
+    document.getElementById('btn-cancel').style.display = "none";
+  };
 
-      let despesasFiltradas = despesas;
+  document.getElementById('form-despesa').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const desc = document.getElementById('desc').value;
+    const valor = parseFloat(document.getElementById('valor').value);
+    const qtd = parseInt(document.getElementById('qtd').value);
+    const [y, m, d] = document.getElementById('dataBase').value.split('-').map(Number);
 
-      if (filtroMes) {
-        const [ano, mes] = filtroMes.split("-").map(Number);
-        despesasFiltradas = despesas.filter(d =>
-          d.parcelas.some(p => {
-            const data = new Date(p.date);
-            return data.getFullYear() === ano && data.getMonth() === mes - 1;
-          })
-        );
-      }
-
-      despesasFiltradas.sort((a, b) => new Date(a.parcelas[0].date) - new Date(b.parcelas[0].date));
-
-      if (despesasFiltradas.length === 0) {
-        lista.innerHTML = "<p style='text-align: center; color: #777;'>Nenhuma despesa encontrada.</p>";
-        return;
-      }
-
-      despesasFiltradas.forEach(d => {
-        const div = document.createElement("div");
-        div.className = "despesa";
-        div.innerHTML = `
-          <div>
-            <strong>${d.desc}</strong><br>
-            <small>${d.parcelas.length}x de R$ ${(d.total / d.parcelas.length).toFixed(2)}</small><br>
-            <span class="total">Total: R$ ${d.total.toFixed(2)}</span>
-          </div>
-          <div class="despesa-actions">
-            <button onclick="excluirDespesa('${d.id}')" class="excluir-btn">Excluir</button>
-          </div>
-        `;
-        lista.appendChild(div);
-
-        d.parcelas.forEach(p => {
-          const pDiv = document.createElement("div");
-          pDiv.className = "parcela" + (p.paid ? " paga" : "");
-          pDiv.innerHTML = `
-            <div>
-              <span>${p.num}ª de ${p.total} - ${formatDate(p.date)}</span>
-              <span>R$ ${parseFloat(p.value).toFixed(2)}</span>
-            </div>
-            <button onclick="pagarParcela('${d.id}','${p.id}')" ${p.paid ? 'disabled' : ''}>
-              ${p.paid ? 'Pago' : 'Pagar'}
-            </button>
-          `;
-          lista.appendChild(pDiv);
-        });
+    const parcelas = [];
+    for(let i=0; i<qtd; i++) {
+      const dt = new Date(y, (m-1)+i, d);
+      if(dt.getDate() !== d) dt.setMonth(dt.getMonth(), 0);
+      parcelas.push({
+        id: Math.random().toString(36).substr(2,9),
+        num: i+1, total: qtd, value: valor, paid: false,
+        date: dt.toISOString().slice(0,10)
       });
-
-      atualizarResumo();
     }
 
-    window.limparFiltro = () => {
-      const el = document.getElementById("filtroMes");
-      if (el) el.value = "";
-      render();
-    };
-
-    window.exportarParaExcel = async function () {
-      if (window.XLSX) return gerarPlanilha();
-      if (scriptCarregado) return;
-      const s = document.createElement("script");
-      s.src = "https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js";
-      s.onload = () => { window.XLSX = XLSX; gerarPlanilha(); };
-      s.onerror = () => alert("Erro ao carregar Excel.");
-      document.head.appendChild(s);
-      scriptCarregado = true;
-    };
-
-    function gerarPlanilha() {
-      const wb = XLSX.utils.book_new();
-      const data = [];
-      despesas.forEach(d => d.parcelas.forEach(p => data.push({
-        "Descrição": d.desc,
-        "Parcela": `${p.num}/${p.total}`,
-        "Data": p.date,
-        "Valor (R$)": p.value.toFixed(2),
-        "Status": p.paid ? "Pago" : "Pendente"
-      })));
-      const ws = XLSX.utils.json_to_sheet(data);
-      XLSX.utils.book_append_sheet(wb, ws, "Parcelas");
-      XLSX.writeFile(wb, `despesas_${new Date().toISOString().split('T')[0]}.xlsx`);
+    if(editId) {
+      await updateDoc(doc(db, "despesas", editId), { desc, parcelas });
+      window.cancelarEdicao();
+    } else {
+      await addDoc(collection(db, "despesas"), { desc, parcelas, userId: auth.currentUser.uid });
     }
+    e.target.reset();
+  });
 
-    document.getElementById("form").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const desc = document.getElementById("desc").value.trim();
-      const valorParcela = parseFloat(document.getElementById("valorParcela").value);
-      const numParcelas = parseInt(document.getElementById("parcelas").value);
-      const dataStr = document.getElementById("data").value;
-
-      if (!desc) return alert("Descrição é obrigatória.");
-      if (isNaN(valorParcela) || valorParcela <= 0) return alert("Valor inválido.");
-      if (!dataStr) return alert("Data é obrigatória.");
-
-      const [y, m, d] = dataStr.split("-").map(Number);
-      const dataInicial = new Date(y, m - 1, d);
-      if (dataInicial.getDate() !== d || dataInicial.getMonth() !== m - 1) {
-        return alert("Data inicial inválida.");
-      }
-
-      // ✅ Geração correta das parcelas
-      const parcelas = [];
-      for (let i = 0; i < numParcelas; i++) {
-        const mesAtual = m - 1 + i;
-        const dataParcela = new Date(y, mesAtual, d);
-
-        // ✅ Ajusta para o último dia do mês se o dia não existir
-        if (dataParcela.getDate() !== d) {
-          dataParcela.setMonth(mesAtual + 1, 0); // último dia
-        }
-
-        // ✅ Formata manualmente (sem fuso horário)
-        const dia = String(dataParcela.getDate()).padStart(2, '0');
-        const mes = String(dataParcela.getMonth() + 1).padStart(2, '0');
-        const ano = dataParcela.getFullYear();
-        const dataFormatada = `${ano}-${mes}-${dia}`;
-
-        parcelas.push({
-          id: uid(),
-          num: i + 1,
-          total: numParcelas,
-          value: valorParcela,
-          date: dataFormatada,
-          paid: false
-        });
-      }
-
-      const currentUser = auth.currentUser;
-      if (!currentUser) {
-        alert("Erro: não autenticado.");
-        return;
-      }
-
-      try {
-        await addDoc(despesasCollection, {
-          desc,
-          total: valorParcela * numParcelas,
-          parcelas,
-          userId: currentUser.uid
-        });
-
-        const msg = document.createElement("div");
-        msg.className = "msg success";
-        msg.textContent = `✅ Despesa "${desc}" adicionada!`;
-        document.querySelector("form").after(msg);
-        setTimeout(() => msg.remove(), 3000);
-        e.target.reset();
-      } catch (error) {
-        console.error("❌ Erro ao salvar:", error);
-        alert("Erro ao salvar: " + error.message);
-      }
-    });
-
-    window.logout = async () => {
-      try {
-        await signOut(auth);
-        localStorage.removeItem("userLoggedIn");
-        localStorage.removeItem("despesasCache");
-        window.location.href = "login.html";
-      } catch (error) {
-        alert("Erro ao sair: " + error.message);
-      }
-    };
-  </script>
+  window.logout = () => signOut(auth).then(() => window.location.href="login.html");
+</script>
 </body>
 </html>
