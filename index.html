@@ -3,25 +3,20 @@
 <head>
   <meta charset="UTF-8" />
   <link rel="shortcut icon" href="./img/money-bag-emoji.jpg" type="image/x-icon">
-  <title>💰Controle Financeiro </title>
+  <title>💰 Controle Financeiro</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
   <style>
     * { box-sizing: border-box; }
     body { font-family: 'Inter', sans-serif; margin: 10px; background: #f4f7f9; color: #333; }
     .app { max-width: 500px; margin: 0 auto; padding: 15px; background: white; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-    
     h1 { text-align: center; font-size: 20px; color: #1a73e8; margin-bottom: 15px; }
-
-    /* Formulário Compacto */
     form { background: #f8f9fa; padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid #eee; }
     .form-group { margin-bottom: 10px; }
     label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 4px; }
     input { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; }
-    .btn-submit { background: #1a73e8; color: white; border: none; padding: 10px; border-radius: 6px; width: 100%; cursor: pointer; font-weight: 600; }
-    .btn-cancel { background: #6c757d; color: white; border: none; padding: 6px; border-radius: 6px; width: 100%; margin-top: 5px; display: none; cursor: pointer; }
-
-    /* Calendário Mini */
+    .btn-submit { background: #1a73e8; color: white; border: none; padding: 10px; border-radius: 6px; width: 100%; cursor: pointer; font-weight: 600; margin-top: 5px; }
+    .btn-cancel { background: #6c757d; color: white; border: none; padding: 8px; border-radius: 6px; width: 100%; margin-top: 5px; display: none; cursor: pointer; }
     .mini-calendar { border: 1px solid #eee; border-radius: 10px; overflow: hidden; margin-bottom: 15px; background: #fff; }
     .cal-header { display: flex; justify-content: space-between; align-items: center; background: #1a73e8; color: white; padding: 8px; font-size: 13px; }
     .cal-header button { background: none; border: none; color: white; cursor: pointer; font-weight: bold; padding: 0 10px; }
@@ -30,34 +25,18 @@
     .cal-num { padding: 6px 0; border-bottom: 1px solid #f9f9f9; position: relative; }
     .has-event::after { content: ''; position: absolute; bottom: 3px; left: 50%; transform: translateX(-50%); width: 4px; height: 4px; background: #1a73e8; border-radius: 50%; }
     .cal-today { background: #e8f0fe; color: #1a73e8; font-weight: bold; border-radius: 4px; }
-
-    /* Cabeçalho da Lista com Filtro */
     .list-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
     .list-header h3 { font-size: 14px; margin: 0; }
-    .filter-btn { 
-      font-size: 11px; 
-      background: #f0f2f5; 
-      border: 1px solid #ddd; 
-      padding: 5px 12px; 
-      border-radius: 20px; 
-      cursor: pointer; 
-      color: #555;
-      transition: all 0.2s;
-    }
+    .filter-btn { font-size: 11px; background: #f0f2f5; border: 1px solid #ddd; padding: 5px 12px; border-radius: 20px; cursor: pointer; color: #555; }
     .filter-btn.active { background: #ea4335; color: white; border-color: #ea4335; }
-
-    /* Lista de Despesas */
-    .expense-list { margin-top: 15px; }
-    .expense-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid #eee; background: white; transition: 0.2s; }
-    .expense-item.pago { opacity: 0.5; }
-    .expense-info { flex-grow: 1; }
+    .expense-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid #eee; background: white; }
+    .expense-item.pago { opacity: 0.5; background: #fcfcfc; }
     .expense-info span { display: block; font-size: 14px; font-weight: 500; }
     .expense-info small { color: #777; font-size: 11px; }
     .expense-actions { display: flex; gap: 8px; }
     .expense-actions button { border: none; background: #f0f2f5; padding: 6px; border-radius: 5px; cursor: pointer; font-size: 12px; }
     .btn-pay { color: #34a853; font-weight: bold; }
     .btn-del { color: #ea4335; }
-
     .resumo { display: flex; gap: 10px; margin-bottom: 15px; }
     .resumo-card { flex: 1; padding: 10px; border-radius: 8px; text-align: center; font-size: 12px; }
     .resumo-card.p { background: #fff3cd; color: #856404; }
@@ -70,29 +49,28 @@
   <h1>Viana Controle</h1>
 
   <form id="form-despesa">
-    <div class="form-group"><label>Descrição</label><input type="text" id="desc" required /></div>
+    <div class="form-group"><label>Descrição</label><input type="text" id="desc" required placeholder="Ex: Aluguel" /></div>
     <div style="display:flex; gap:10px">
       <div class="form-group" style="flex:1"><label>Valor R$</label><input type="number" id="valor" step="0.01" required /></div>
-      <div class="form-group" style="flex:1"><label>Parcelas</label><input type="number" id="qtd" value="1" /></div>
+      <div class="form-group" style="flex:1"><label>Parcelas</label><input type="number" id="qtd" value="1" min="1" /></div>
     </div>
-    <div class="form-group"><label>Data 1ª Parcela</label><input type="date" id="dataBase" required /></div>
-    <button type="submit" class="btn-submit" id="btn-save">Salvar</button>
-    <button type="button" class="btn-cancel" id="btn-cancel" onclick="window.cancelarEdicao()">Cancelar</button>
+    <div class="form-group"><label>Data da 1ª Parcela</label><input type="date" id="dataBase" required /></div>
+    <button type="submit" class="btn-submit" id="btn-save">Salvar Lançamento</button>
+    <button type="button" class="btn-cancel" id="btn-cancel">Cancelar Edição</button>
   </form>
 
   <div class="resumo" id="resumo"></div>
-
   <div class="mini-calendar" id="calendar"></div>
 
-  <div class="expense-list" id="expense-list">
+  <div class="expense-list">
     <div class="list-header">
       <h3>Contas do Mês</h3>
-      <button id="filter-btn" class="filter-btn" onclick="window.toggleFiltro()">Apenas Pendentes</button>
+      <button id="filter-btn" class="filter-btn">Apenas Pendentes</button>
     </div>
     <div id="items-container"></div>
   </div>
 
-  <button onclick="window.logout()" style="width:100%; margin-top:20px; border:none; background:none; color:#ea4335; cursor:pointer; font-size:12px">Sair do Sistema</button>
+  <button id="btn-logout" style="width:100%; margin-top:20px; border:none; background:none; color:#ea4335; cursor:pointer; font-size:12px; text-decoration: underline;">Sair da conta</button>
 </div>
 
 <script type="module">
@@ -118,13 +96,12 @@
   let mesRef = new Date().toISOString().slice(0, 7);
   let filtrarPendentes = false;
 
-  // Formata o número: 1500.50 -> 1.500,50
-  const formatMoeda = (valor) => {
-    return valor.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  };
+  const formatMoeda = (v) => v.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
 
+  // Monitorar Autenticação
   onAuthStateChanged(auth, (user) => {
     if (!user) { window.location.href = "login.html"; return; }
+    
     const q = query(collection(db, "despesas"), where("userId", "==", user.uid));
     onSnapshot(q, (snap) => {
       despesas = snap.docs.map(d => ({ id: d.id, ...d.data() }));
@@ -132,75 +109,84 @@
     });
   });
 
-  window.toggleFiltro = () => {
-    filtrarPendentes = !filtrarPendentes;
-    document.getElementById('filter-btn').classList.toggle('active', filtrarPendentes);
-    renderList();
-  };
-
   function renderAll() {
     renderCalendar();
     renderList();
   }
 
+  // Calendário
   function renderCalendar() {
     const [ano, mes] = mesRef.split('-').map(Number);
-    const prim = new Date(ano, mes-1, 1).getDay();
-    const ult = new Date(ano, mes, 0).getDate();
+    const primDia = new Date(ano, mes - 1, 1).getDay();
+    const ultDia = new Date(ano, mes, 0).getDate();
+    
     const diasComGasto = despesas.flatMap(d => d.parcelas.map(p => p.date))
                                  .filter(d => d.startsWith(mesRef))
                                  .map(d => parseInt(d.split('-')[2]));
 
     let html = `
       <div class="cal-header">
-        <button onclick="window.mudarMes(-1)">❮</button>
-        <span>${new Date(ano, mes-1).toLocaleDateString('pt-BR', {month:'short', year:'numeric'}).toUpperCase()}</span>
-        <button onclick="window.mudarMes(1)">❯</button>
+        <button id="prevMonth">❮</button>
+        <span>${new Date(ano, mes - 1, 1).toLocaleDateString('pt-BR', {month:'long', year:'numeric'}).toUpperCase()}</span>
+        <button id="nextMonth">❯</button>
       </div>
       <div class="cal-grid">
         <div class="cal-day-name">D</div><div class="cal-day-name">S</div><div class="cal-day-name">T</div>
         <div class="cal-day-name">Q</div><div class="cal-day-name">Q</div><div class="cal-day-name">S</div><div class="cal-day-name">S</div>`;
     
-    for(let i=0; i<prim; i++) html += `<div></div>`;
-    for(let d=1; d<=ult; d++) {
-      const isHoje = new Date().toISOString().slice(0,10) === `${ano}-${String(mes).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-      const temGasto = diasComGasto.includes(d);
-      html += `<div class="cal-num ${isHoje?'cal-today':''} ${temGasto?'has-event':''}">${d}</div>`;
+    for(let i=0; i<primDia; i++) html += `<div></div>`;
+    for(let d=1; d<=ultDia; d++) {
+      const dataIso = `${ano}-${String(mes).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+      const isHoje = new Date().toISOString().slice(0,10) === dataIso;
+      html += `<div class="cal-num ${isHoje?'cal-today':''} ${diasComGasto.includes(d)?'has-event':''}">${d}</div>`;
     }
     document.getElementById('calendar').innerHTML = html + `</div>`;
+
+    document.getElementById('prevMonth').onclick = () => mudarMes(-1);
+    document.getElementById('nextMonth').onclick = () => mudarMes(1);
   }
 
+  function mudarMes(n) {
+    const [ano, mes] = mesRef.split('-').map(Number);
+    mesRef = new Date(ano, (mes - 1) + n, 1).toISOString().slice(0, 7);
+    renderAll();
+  }
+
+  // Lista de Itens
   function renderList() {
     const container = document.getElementById('items-container');
     container.innerHTML = '';
-    let pTotal=0, okTotal=0;
+    let pTotal = 0, okTotal = 0;
 
     let parcelasMes = despesas.flatMap(d => d.parcelas.map(p => ({...p, desc: d.desc, dId: d.id})))
                                 .filter(p => p.date.startsWith(mesRef))
                                 .sort((a,b) => a.date.localeCompare(b.date));
 
-    parcelasMes.forEach(item => { item.paid ? okTotal += item.value : pTotal += item.value; });
-
-    if(filtrarPendentes) parcelasMes = parcelasMes.filter(item => !item.paid);
-
-    if(parcelasMes.length === 0) {
-        container.innerHTML = `<p style="text-align:center; font-size:12px; color:#999; margin:20px 0">Nenhum item encontrado.</p>`;
-    }
+    parcelasMes.forEach(p => p.paid ? okTotal += p.value : pTotal += p.value);
+    
+    if(filtrarPendentes) parcelasMes = parcelasMes.filter(p => !p.paid);
 
     parcelasMes.forEach(item => {
-      container.innerHTML += `
-        <div class="expense-item ${item.paid?'pago':''}">
-          <div class="expense-info">
-            <span>${item.desc}</span>
-            <small>${item.date.split('-').reverse().join('/')} • Parcela ${item.num}/${item.total}</small>
-            <strong style="font-size:13px">R$ ${formatMoeda(item.value)}</strong>
-          </div>
-          <div class="expense-actions">
-            ${!item.paid ? `<button class="btn-pay" onclick="window.pagar('${item.dId}','${item.id}')">✔</button>` : ''}
-            <button onclick="window.editar('${item.dId}')">✏</button>
-            <button class="btn-del" onclick="window.excluir('${item.dId}')">🗑</button>
-          </div>
+      const div = document.createElement('div');
+      div.className = `expense-item ${item.paid?'pago':''}`;
+      div.innerHTML = `
+        <div class="expense-info">
+          <span>${item.desc}</span>
+          <small>${item.date.split('-').reverse().join('/')} • Parcela ${item.num}/${item.total}</small>
+          <strong>R$ ${formatMoeda(item.value)}</strong>
+        </div>
+        <div class="expense-actions">
+          ${!item.paid ? `<button class="btn-pay" data-did="${item.dId}" data-pid="${item.id}">✔</button>` : ''}
+          <button class="btn-del" data-did="${item.dId}">🗑</button>
         </div>`;
+      container.appendChild(div);
+    });
+
+    document.querySelectorAll('.btn-pay').forEach(b => {
+      b.onclick = () => alternarPagamento(b.dataset.did, b.dataset.pid);
+    });
+    document.querySelectorAll('.btn-del').forEach(b => {
+      b.onclick = () => excluirGasto(b.dataset.did);
     });
 
     document.getElementById('resumo').innerHTML = `
@@ -208,40 +194,20 @@
       <div class="resumo-card ok">Pago<br><b>R$ ${formatMoeda(okTotal)}</b></div>`;
   }
 
-  window.mudarMes = (n) => {
-    const [ano, mes] = mesRef.split('-').map(Number);
-    mesRef = new Date(ano, (mes-1)+n, 1).toISOString().slice(0,7);
-    renderAll();
-  };
-
-  window.pagar = async (dId, pId) => {
+  async function alternarPagamento(dId, pId) {
     const d = despesas.find(x => x.id === dId);
-    const novas = d.parcelas.map(p => p.id === pId ? {...p, paid: true} : p);
-    await updateDoc(doc(db, "despesas", dId), { parcelas: novas });
-  };
+    const novasParcelas = d.parcelas.map(p => p.id === pId ? {...p, paid: true} : p);
+    await updateDoc(doc(db, "despesas", dId), { parcelas: novasParcelas });
+  }
 
-  window.excluir = async (id) => { if(confirm("Excluir?")) await deleteDoc(doc(db, "despesas", id)); };
+  async function excluirGasto(id) {
+    if(confirm("Excluir este lançamento e todas as suas parcelas?")) {
+      await deleteDoc(doc(db, "despesas", id));
+    }
+  }
 
-  window.editar = (id) => {
-    const d = despesas.find(x => x.id === id);
-    editId = id;
-    document.getElementById('desc').value = d.desc;
-    document.getElementById('valor').value = d.parcelas[0].value;
-    document.getElementById('qtd').value = d.parcelas.length;
-    document.getElementById('dataBase').value = d.parcelas[0].date;
-    document.getElementById('btn-save').textContent = "Atualizar";
-    document.getElementById('btn-cancel').style.display = "block";
-    window.scrollTo({top: 0, behavior: 'smooth'});
-  };
-
-  window.cancelarEdicao = () => {
-    editId = null;
-    document.getElementById('form-despesa').reset();
-    document.getElementById('btn-save').textContent = "Salvar";
-    document.getElementById('btn-cancel').style.display = "none";
-  };
-
-  document.getElementById('form-despesa').addEventListener('submit', async (e) => {
+  // Formulário
+  document.getElementById('form-despesa').onsubmit = async (e) => {
     e.preventDefault();
     const desc = document.getElementById('desc').value;
     const valor = parseFloat(document.getElementById('valor').value);
@@ -250,8 +216,9 @@
 
     const parcelas = [];
     for(let i=0; i<qtd; i++) {
-      const dt = new Date(y, (m-1)+i, d);
-      if(dt.getDate() !== d) dt.setMonth(dt.getMonth(), 0);
+      const dt = new Date(y, (m - 1) + i, d);
+      if(dt.getDate() !== d) dt.setDate(0); // Ajuste para meses curtos
+      
       parcelas.push({
         id: Math.random().toString(36).substr(2,9),
         num: i+1, total: qtd, value: valor, paid: false,
@@ -259,16 +226,21 @@
       });
     }
 
-    if(editId) {
-      await updateDoc(doc(db, "despesas", editId), { desc, parcelas });
-      window.cancelarEdicao();
-    } else {
-      await addDoc(collection(db, "despesas"), { desc, parcelas, userId: auth.currentUser.uid });
-    }
+    await addDoc(collection(db, "despesas"), {
+      desc, parcelas, userId: auth.currentUser.uid, createdAt: new Date()
+    });
+    
     e.target.reset();
-  });
+    document.getElementById('qtd').value = 1;
+  };
 
-  window.logout = () => signOut(auth).then(() => window.location.href="login.html");
+  document.getElementById('filter-btn').onclick = function() {
+    filtrarPendentes = !filtrarPendentes;
+    this.classList.toggle('active');
+    renderList();
+  };
+
+  document.getElementById('btn-logout').onclick = () => signOut(auth);
 </script>
 </body>
 </html>
