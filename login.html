@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <link rel="shortcut icon" href="./img/money-bag-emoji.jpg" type="image/x-icon">
-  <title>💰Viana Controle</title>
+  <title>💰 Viana Controle - Login</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -30,7 +30,7 @@
     input:focus { border-color: #1a73e8; outline: none; box-shadow: 0 0 0 3px rgba(26,115,232,0.1); }
 
     .btn { 
-      width: 100%; padding: 12px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; 
+      width: 100%; padding: 14px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; 
       display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.3s ease; font-size: 14px; text-decoration: none;
     }
     .btn-pix { background: #6f42c1; color: white; }
@@ -38,10 +38,17 @@
     
     .btn-copy { background: #e2e8f0; color: #475569; margin-top: 10px; font-size: 12px; }
     
-    .btn-whatsapp { background: #25D366; color: white; margin-top: 10px; display: none; }
-    .btn-whatsapp:hover { background: #1ebc57; }
+    /* Ajuste no Botão WhatsApp */
+    .btn-whatsapp { 
+        background: #25D366; 
+        color: white; 
+        margin-top: 10px; 
+        display: none; /* Começa escondido, aparece via JS */
+    }
+    .btn-whatsapp:hover { background: #1ebc57; opacity: 0.9; }
 
     .btn-login { background: #1a73e8; color: white; margin-top: 10px; }
+    .btn-login:disabled { background: #ccc; cursor: not-allowed; }
 
     #area-pix { 
       display: none; margin-top: 15px; text-align: center; border-top: 1px solid #eee; padding-top: 15px;
@@ -49,8 +56,8 @@
     #qrcode { display: inline-block; padding: 10px; background: white; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 10px; }
     
     .pix-key-display {
-      font-family: monospace; font-size: 11px; background: #eee; padding: 10px; border-radius: 4px;
-      word-break: break-all; display: block; color: #666; cursor: pointer; border: 1px dashed #ccc;
+      font-family: monospace; font-size: 10px; background: #f1f5f9; padding: 10px; border-radius: 4px;
+      word-break: break-all; display: block; color: #64748b; cursor: pointer; border: 1px dashed #cbd5e1;
     }
 
     .msg { font-size: 13px; margin-top: 15px; display: none; padding: 12px; border-radius: 6px; line-height: 1.4; }
@@ -69,17 +76,19 @@
     
     <div id="area-pix">
       <div id="qrcode"></div>
-      <span class="pix-key-display" id="pix-text" onclick="copiarPix()" title="Clique para copiar"></span>
+      <p style="font-size: 11px; color: #666; margin-bottom: 5px;">Clique no código abaixo para copiar:</p>
+      <span class="pix-key-display" id="pix-text" onclick="copiarPix()"></span>
       <button class="btn btn-copy" id="btnCopiar" onclick="copiarPix()">📋 Copiar Código Pix</button>
     </div>
   </div>
 
   <div class="step-box">
-    <span class="step-title">2️⃣ Confirmar Pagamento</span>
-    <input type="text" id="nome-usuario" placeholder="Seu Nome Completo" oninput="validarWhatsapp()">
-    <a href="javascript:void(0)" id="btn-whatsapp" class="btn btn-whatsapp" onclick="enviarWhatsapp()">
+    <span class="step-title">2️⃣ Após o pagamento, enviar mensagem para liberar acesso.</span>
+    <input type="text" id="nome-usuario" placeholder="Seu Nome Completo" onkeyup="validarWhatsapp()">
+    
+    <button id="btn-whatsapp" class="btn btn-whatsapp" onclick="enviarWhatsapp()">
       📲 Enviar Comprovante no WhatsApp
-    </a>
+    </button>
   </div>
 
   <div class="step-box" style="background: #f0f7ff; border-color: #1a73e8;">
@@ -111,7 +120,9 @@
   const db = getFirestore(app);
 
   const WHATSAPP_NUM = "5519996796851";
-  const PIX_CODE = "2a6b15e4-70f7-49de-91d6-9c0659c156cb"; // Chave Pix Copia e Cola
+  
+  // Substitua pela sua string "Copia e Cola" completa
+  const PIX_COPIA_E_COLA = "00020126360014BR.GOV.BCB.PIX0114+551999679685152040000530398654045.005802BR5901N6001C62070503***63049D51";
 
   function showMsg(txt, type = 'err') {
     const fb = document.getElementById('feedback');
@@ -126,46 +137,37 @@
   window.gerarPix = () => {
     const qrDiv = document.getElementById('qrcode');
     qrDiv.innerHTML = "";
-    new QRCode(qrDiv, { text: PIX_CODE, width: 150, height: 150 });
-    document.getElementById('pix-text').textContent = PIX_CODE;
+    new QRCode(qrDiv, { text: PIX_COPIA_E_COLA, width: 150, height: 150 });
+    document.getElementById('pix-text').textContent = PIX_COPIA_E_COLA;
     document.getElementById('area-pix').style.display = 'block';
-    validarWhatsapp();
   };
 
   window.copiarPix = () => {
     const pixText = document.getElementById('pix-text').textContent;
-    const btnCopy = document.getElementById('btnCopiar');
-
+    if(!pixText) return;
     navigator.clipboard.writeText(pixText).then(() => {
-      // Efeito Visual de Sucesso
-      const originalText = btnCopy.innerHTML;
-      btnCopy.innerHTML = "✅ Código Copiado!";
-      btnCopy.style.backgroundColor = "#25D366";
-      btnCopy.style.color = "white";
-
-      setTimeout(() => {
-        btnCopy.innerHTML = originalText;
-        btnCopy.style.backgroundColor = "";
-        btnCopy.style.color = "";
-      }, 2000);
+      const btnCopy = document.getElementById('btnCopiar');
+      const original = btnCopy.innerHTML;
+      btnCopy.innerHTML = "✅ Copiado!";
+      setTimeout(() => btnCopy.innerHTML = original, 2000);
     });
   };
 
+  // CORREÇÃO: O botão aparece apenas com o nome preenchido
   window.validarWhatsapp = () => {
     const nome = document.getElementById('nome-usuario').value;
     const btnZap = document.getElementById('btn-whatsapp');
-    const pixAtivo = document.getElementById('area-pix').style.display === 'block';
-
-    if(nome.trim().length >= 3 && pixAtivo) {
-      btnZap.style.display = 'flex';
+    
+    if(nome.trim().length >= 3) {
+      btnZap.style.display = 'flex'; // Exibe o botão
     } else {
-      btnZap.style.display = 'none';
+      btnZap.style.display = 'none'; // Esconde se apagar o nome
     }
   };
 
   window.enviarWhatsapp = () => {
     const nome = document.getElementById('nome-usuario').value;
-    const msg = encodeURIComponent(`Olá! Meu nome é ${nome}. Acabei de pagar o acesso ao Viana Controle. Segue o comprovante!`);
+    const msg = encodeURIComponent(`Olá! Meu nome é ${nome}. Fiz o pagamento de R$ 5,00 para o Viana Controle. Segue o comprovante para liberação!`);
     window.open(`https://wa.me/${WHATSAPP_NUM}?text=${msg}`, '_blank');
   };
 
@@ -173,25 +175,31 @@
   document.getElementById('btnLogin').onclick = async () => {
     const email = document.getElementById('email').value;
     const senha = document.getElementById('senha').value;
+    const btn = document.getElementById('btnLogin');
 
-    if(!email || !senha) return showMsg("Por favor, preencha todos os campos.");
+    if(!email || !senha) return showMsg("Preencha e-mail e senha.");
+
+    btn.disabled = true;
+    btn.textContent = "Carregando...";
 
     try {
       const userRes = await signInWithEmailAndPassword(auth, email, senha);
       const uid = userRes.user.uid;
-
-      // Verificação no Firestore
       const userDoc = await getDoc(doc(db, "usuarios", uid));
 
       if (userDoc.exists() && userDoc.data().aprovado === true) {
-        showMsg("✅ Acesso liberado! Entrando...", "suc");
-        setTimeout(() => window.location.href = "index.html", 1000);
+        showMsg("✅ Sucesso!", "suc");
+        window.location.href = "index.html";
       } else {
-        showMsg("⚠️ Aguardando aprovação manual do administrador.");
+        showMsg("⚠️ Pagamento não aprovado ainda. Fale conosco no WhatsApp.");
         await signOut(auth);
+        btn.disabled = false;
+        btn.textContent = "Entrar";
       }
     } catch (e) {
-      showMsg("E-mail ou senha incorretos.");
+      showMsg("Dados incorretos.");
+      btn.disabled = false;
+      btn.textContent = "Entrar";
     }
   };
 </script>
