@@ -20,40 +20,40 @@
     h1 { font-size: 22px; color: #333; margin-bottom: 20px; }
     
     .step-box {
-      background: #f8f9fa;
-      border: 1px solid #e9ecef;
-      border-radius: 12px;
-      padding: 20px;
-      margin-bottom: 20px;
-      text-align: left;
+      background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 12px; padding: 20px; margin-bottom: 20px; text-align: left;
     }
     .step-title { font-weight: 600; color: #1a73e8; margin-bottom: 10px; display: block; font-size: 15px; }
     
     input { 
-      width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px;
+      width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; transition: 0.3s;
     }
+    input:focus { border-color: #1a73e8; outline: none; box-shadow: 0 0 0 3px rgba(26,115,232,0.1); }
 
     .btn { 
       width: 100%; padding: 12px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; 
-      display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.3s; font-size: 14px;
-      text-decoration: none;
+      display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.3s ease; font-size: 14px; text-decoration: none;
     }
     .btn-pix { background: #6f42c1; color: white; }
+    .btn-pix:hover { background: #5a32a3; }
+    
     .btn-copy { background: #e2e8f0; color: #475569; margin-top: 10px; font-size: 12px; }
+    
     .btn-whatsapp { background: #25D366; color: white; margin-top: 10px; display: none; }
+    .btn-whatsapp:hover { background: #1ebc57; }
+
     .btn-login { background: #1a73e8; color: white; margin-top: 10px; }
 
     #area-pix { 
       display: none; margin-top: 15px; text-align: center; border-top: 1px solid #eee; padding-top: 15px;
     }
-    #qrcode { display: inline-block; padding: 10px; background: white; border: 1px solid #ddd; border-radius: 8px; }
+    #qrcode { display: inline-block; padding: 10px; background: white; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 10px; }
     
     .pix-key-display {
-      font-family: monospace; font-size: 11px; background: #eee; padding: 8px; border-radius: 4px;
-      word-break: break-all; margin-top: 10px; display: block; color: #666; cursor: pointer;
+      font-family: monospace; font-size: 11px; background: #eee; padding: 10px; border-radius: 4px;
+      word-break: break-all; display: block; color: #666; cursor: pointer; border: 1px dashed #ccc;
     }
 
-    .msg { font-size: 13px; margin-top: 15px; display: none; padding: 10px; border-radius: 6px; }
+    .msg { font-size: 13px; margin-top: 15px; display: none; padding: 12px; border-radius: 6px; line-height: 1.4; }
     .err { background: #fdecea; color: #ea4335; border: 1px solid #fad2cf; }
     .suc { background: #e6f4ea; color: #1e8e3e; border: 1px solid #ceead6; }
   </style>
@@ -65,12 +65,12 @@
 
   <div class="step-box">
     <span class="step-title">1️⃣ Pagamento (R$ 5,00)</span>
-    <button class="btn btn-pix" onclick="gerarPix()">Gerar QR Code Pix</button>
+    <button class="btn btn-pix" id="btnGerarPix" onclick="gerarPix()">Gerar QR Code Pix</button>
     
     <div id="area-pix">
       <div id="qrcode"></div>
-      <span class="pix-key-display" id="pix-text" onclick="copiarPix()"></span>
-      <button class="btn btn-copy" onclick="copiarPix()">📋 Copiar Código Pix</button>
+      <span class="pix-key-display" id="pix-text" onclick="copiarPix()" title="Clique para copiar"></span>
+      <button class="btn btn-copy" id="btnCopiar" onclick="copiarPix()">📋 Copiar Código Pix</button>
     </div>
   </div>
 
@@ -78,9 +78,8 @@
     <span class="step-title">2️⃣ Confirmar Pagamento</span>
     <input type="text" id="nome-usuario" placeholder="Seu Nome Completo" oninput="validarWhatsapp()">
     <a href="javascript:void(0)" id="btn-whatsapp" class="btn btn-whatsapp" onclick="enviarWhatsapp()">
-      📲 Enviar Comprovante
+      📲 Enviar Comprovante no WhatsApp
     </a>
-    <p id="feedback-nome" style="font-size: 11px; color: #666; margin: 5px 0 0;">Digite seu nome após gerar o Pix.</p>
   </div>
 
   <div class="step-box" style="background: #f0f7ff; border-color: #1a73e8;">
@@ -112,29 +111,43 @@
   const db = getFirestore(app);
 
   const WHATSAPP_NUM = "5519996796851";
-  const PIX_CODE = "2a6b15e4-70f7-49de-91d6-9c0659c156cb"; // Substitua pelo seu Copia e Cola real
+  const PIX_CODE = "2a6b15e4-70f7-49de-91d6-9c0659c156cb"; // Chave Pix Copia e Cola
 
   function showMsg(txt, type = 'err') {
     const fb = document.getElementById('feedback');
     fb.textContent = txt;
     fb.className = `msg ${type}`;
     fb.style.display = "block";
-    setTimeout(() => fb.style.display = "none", 8000);
+    setTimeout(() => fb.style.display = "none", 5000);
   }
 
   // --- FUNÇÕES GLOBAIS ---
+
   window.gerarPix = () => {
     const qrDiv = document.getElementById('qrcode');
     qrDiv.innerHTML = "";
-    new QRCode(qrDiv, { text: PIX_CODE, width: 140, height: 140 });
+    new QRCode(qrDiv, { text: PIX_CODE, width: 150, height: 150 });
     document.getElementById('pix-text').textContent = PIX_CODE;
     document.getElementById('area-pix').style.display = 'block';
     validarWhatsapp();
   };
 
   window.copiarPix = () => {
-    navigator.clipboard.writeText(PIX_CODE).then(() => {
-      showMsg("✅ Código Pix copiado!", "suc");
+    const pixText = document.getElementById('pix-text').textContent;
+    const btnCopy = document.getElementById('btnCopiar');
+
+    navigator.clipboard.writeText(pixText).then(() => {
+      // Efeito Visual de Sucesso
+      const originalText = btnCopy.innerHTML;
+      btnCopy.innerHTML = "✅ Código Copiado!";
+      btnCopy.style.backgroundColor = "#25D366";
+      btnCopy.style.color = "white";
+
+      setTimeout(() => {
+        btnCopy.innerHTML = originalText;
+        btnCopy.style.backgroundColor = "";
+        btnCopy.style.color = "";
+      }, 2000);
     });
   };
 
@@ -145,7 +158,6 @@
 
     if(nome.trim().length >= 3 && pixAtivo) {
       btnZap.style.display = 'flex';
-      document.getElementById('feedback-nome').style.display = 'none';
     } else {
       btnZap.style.display = 'none';
     }
@@ -157,25 +169,25 @@
     window.open(`https://wa.me/${WHATSAPP_NUM}?text=${msg}`, '_blank');
   };
 
-  // --- LOGIN COM VERIFICAÇÃO DE BANCO ---
+  // --- LOGIN ---
   document.getElementById('btnLogin').onclick = async () => {
     const email = document.getElementById('email').value;
     const senha = document.getElementById('senha').value;
 
-    if(!email || !senha) return showMsg("Preencha todos os campos.");
+    if(!email || !senha) return showMsg("Por favor, preencha todos os campos.");
 
     try {
       const userRes = await signInWithEmailAndPassword(auth, email, senha);
       const uid = userRes.user.uid;
 
-      // Busca a autorização no Firestore
+      // Verificação no Firestore
       const userDoc = await getDoc(doc(db, "usuarios", uid));
 
       if (userDoc.exists() && userDoc.data().aprovado === true) {
-        showMsg("✅ Login realizado! Entrando...", "suc");
+        showMsg("✅ Acesso liberado! Entrando...", "suc");
         setTimeout(() => window.location.href = "index.html", 1000);
       } else {
-        showMsg("⚠️ Sua conta aguarda aprovação manual do administrador.");
+        showMsg("⚠️ Aguardando aprovação manual do administrador.");
         await signOut(auth);
       }
     } catch (e) {
