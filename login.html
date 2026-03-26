@@ -6,6 +6,7 @@
   <title>Acesso - Viana Controle</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <style>
     * { box-sizing: border-box; }
     body {
@@ -14,32 +15,45 @@
       margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px;
     }
     .login-container {
-      width: 100%; max-width: 400px; padding: 30px; background: white; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); text-align: center;
-      animation: fadeIn 0.5s ease;
+      width: 100%; max-width: 420px; padding: 30px; background: white; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); text-align: center;
     }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+    h1 { font-size: 22px; color: #333; margin-bottom: 20px; }
     
-    h1 { font-size: 24px; color: #333; margin-bottom: 8px; }
-    p.subtitle { color: #666; font-size: 14px; margin-bottom: 25px; }
+    .step-box {
+      background: #f8f9fa;
+      border: 1px solid #e9ecef;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      text-align: left;
+    }
+    .step-title { font-weight: 600; color: #1a73e8; margin-bottom: 10px; display: block; font-size: 15px; }
     
     input { 
-      width: 100%; padding: 12px; margin-bottom: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; transition: border 0.3s;
+      width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px;
     }
-    input:focus { outline: none; border-color: #1a73e8; box-shadow: 0 0 0 3px rgba(26,115,232,0.1); }
-    
-    .btn-main { width: 100%; padding: 12px; border: none; border-radius: 8px; background: #1a73e8; color: white; font-weight: 600; cursor: pointer; margin-bottom: 10px; transition: background 0.3s; }
-    .btn-main:hover { background: #1557b0; }
-    .btn-main:disabled { background: #ccc; cursor: not-allowed; }
-    
-    .btn-sec { background: none; border: 1px solid #1a73e8; color: #1a73e8; width: 100%; padding: 10px; border-radius: 8px; cursor: pointer; font-size: 13px; transition: all 0.3s; }
-    .btn-sec:hover { background: #e8f0fe; }
 
-    .forgot-pass {
-      display: block; text-align: right; font-size: 12px; color: #666; text-decoration: none; margin-top: -5px; margin-bottom: 15px;
+    .btn { 
+      width: 100%; padding: 12px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; 
+      display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.3s; font-size: 14px;
+      text-decoration: none;
     }
-    .forgot-pass:hover { color: #1a73e8; text-decoration: underline; }
+    .btn-pix { background: #6f42c1; color: white; }
+    .btn-copy { background: #e2e8f0; color: #475569; margin-top: 10px; font-size: 12px; }
+    .btn-whatsapp { background: #25D366; color: white; margin-top: 10px; display: none; }
+    .btn-login { background: #1a73e8; color: white; margin-top: 10px; }
 
-    .msg { font-size: 13px; margin-top: 15px; display: none; padding: 10px; border-radius: 6px; line-height: 1.4; }
+    #area-pix { 
+      display: none; margin-top: 15px; text-align: center; border-top: 1px solid #eee; padding-top: 15px;
+    }
+    #qrcode { display: inline-block; padding: 10px; background: white; border: 1px solid #ddd; border-radius: 8px; }
+    
+    .pix-key-display {
+      font-family: monospace; font-size: 11px; background: #eee; padding: 8px; border-radius: 4px;
+      word-break: break-all; margin-top: 10px; display: block; color: #666; cursor: pointer;
+    }
+
+    .msg { font-size: 13px; margin-top: 15px; display: none; padding: 10px; border-radius: 6px; }
     .err { background: #fdecea; color: #ea4335; border: 1px solid #fad2cf; }
     .suc { background: #e6f4ea; color: #1e8e3e; border: 1px solid #ceead6; }
   </style>
@@ -48,23 +62,41 @@
 
 <div class="login-container">
   <h1>💰 Viana Controle</h1>
-  <p class="subtitle" id="subtitle">Faça login para continuar</p>
 
-  <input type="email" id="email" placeholder="E-mail" />
-  <input type="password" id="senha" placeholder="Senha" />
-  
-  <!-- Link Esqueci a Senha -->
-  <a href="#" class="forgot-pass" id="linkEsqueci" onclick="recuperarSenha(event)">Esqueceu a senha?</a>
+  <div class="step-box">
+    <span class="step-title">1️⃣ Pagamento (R$ 5,00)</span>
+    <button class="btn btn-pix" onclick="gerarPix()">Gerar QR Code Pix</button>
+    
+    <div id="area-pix">
+      <div id="qrcode"></div>
+      <span class="pix-key-display" id="pix-text" onclick="copiarPix()"></span>
+      <button class="btn btn-copy" onclick="copiarPix()">📋 Copiar Código Pix</button>
+    </div>
+  </div>
 
-  <button class="btn-main" id="btnLogin">Entrar</button>
-  <button class="btn-sec" id="btnReg">Criar nova conta</button>
+  <div class="step-box">
+    <span class="step-title">2️⃣ Confirmar Pagamento</span>
+    <input type="text" id="nome-usuario" placeholder="Seu Nome Completo" oninput="validarWhatsapp()">
+    <a href="javascript:void(0)" id="btn-whatsapp" class="btn btn-whatsapp" onclick="enviarWhatsapp()">
+      📲 Enviar Comprovante
+    </a>
+    <p id="feedback-nome" style="font-size: 11px; color: #666; margin: 5px 0 0;">Digite seu nome após gerar o Pix.</p>
+  </div>
+
+  <div class="step-box" style="background: #f0f7ff; border-color: #1a73e8;">
+    <span class="step-title">3️⃣ Acesso ao Sistema</span>
+    <input type="email" id="email" placeholder="E-mail">
+    <input type="password" id="senha" placeholder="Senha">
+    <button class="btn btn-login" id="btnLogin">Entrar</button>
+  </div>
   
   <div id="feedback" class="msg"></div>
 </div>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification, onAuthStateChanged, signOut, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getAuth, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyAjgQTdQmo63-0mR8k1bVYsY0E8I7Iqbnk",
@@ -77,109 +109,79 @@
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
-  const feedback = document.getElementById('feedback');
-  const emailInput = document.getElementById('email');
-  const senhaInput = document.getElementById('senha');
-  const btnLogin = document.getElementById('btnLogin');
-  const btnReg = document.getElementById('btnReg');
-  const linkEsqueci = document.getElementById('linkEsqueci');
-  const subtitle = document.getElementById('subtitle');
+  const db = getFirestore(app);
 
-  function showMsg(txt, isErr = true) {
-    feedback.textContent = txt;
-    feedback.className = `msg ${isErr ? 'err' : 'suc'}`;
-    feedback.style.display = 'block';
+  const WHATSAPP_NUM = "5519996796851";
+  const PIX_CODE = "2a6b15e4-70f7-49de-91d6-9c0659c156cb"; // Substitua pelo seu Copia e Cola real
+
+  function showMsg(txt, type = 'err') {
+    const fb = document.getElementById('feedback');
+    fb.textContent = txt;
+    fb.className = `msg ${type}`;
+    fb.style.display = "block";
+    setTimeout(() => fb.style.display = "none", 8000);
   }
 
-  // Função de Login
-  btnLogin.onclick = async () => {
-    const email = emailInput.value;
-    const senha = senhaInput.value;
-    
-    if(!email || !senha) return showMsg("Preencha e-mail e senha.");
+  // --- FUNÇÕES GLOBAIS ---
+  window.gerarPix = () => {
+    const qrDiv = document.getElementById('qrcode');
+    qrDiv.innerHTML = "";
+    new QRCode(qrDiv, { text: PIX_CODE, width: 140, height: 140 });
+    document.getElementById('pix-text').textContent = PIX_CODE;
+    document.getElementById('area-pix').style.display = 'block';
+    validarWhatsapp();
+  };
 
-    btnLogin.disabled = true;
-    btnLogin.textContent = "Entrando...";
+  window.copiarPix = () => {
+    navigator.clipboard.writeText(PIX_CODE).then(() => {
+      showMsg("✅ Código Pix copiado!", "suc");
+    });
+  };
+
+  window.validarWhatsapp = () => {
+    const nome = document.getElementById('nome-usuario').value;
+    const btnZap = document.getElementById('btn-whatsapp');
+    const pixAtivo = document.getElementById('area-pix').style.display === 'block';
+
+    if(nome.trim().length >= 3 && pixAtivo) {
+      btnZap.style.display = 'flex';
+      document.getElementById('feedback-nome').style.display = 'none';
+    } else {
+      btnZap.style.display = 'none';
+    }
+  };
+
+  window.enviarWhatsapp = () => {
+    const nome = document.getElementById('nome-usuario').value;
+    const msg = encodeURIComponent(`Olá! Meu nome é ${nome}. Acabei de pagar o acesso ao Viana Controle. Segue o comprovante!`);
+    window.open(`https://wa.me/${WHATSAPP_NUM}?text=${msg}`, '_blank');
+  };
+
+  // --- LOGIN COM VERIFICAÇÃO DE BANCO ---
+  document.getElementById('btnLogin').onclick = async () => {
+    const email = document.getElementById('email').value;
+    const senha = document.getElementById('senha').value;
+
+    if(!email || !senha) return showMsg("Preencha todos os campos.");
 
     try {
-      const res = await signInWithEmailAndPassword(auth, email, senha);
-      if(!res.user.emailVerified) {
-        showMsg("⚠️ Por favor, verifique seu e-mail antes de acessar. Verifique também o Spam.");
-        await signOut(auth);
-      } else {
-        showMsg("✅ Login realizado com sucesso!", false);
+      const userRes = await signInWithEmailAndPassword(auth, email, senha);
+      const uid = userRes.user.uid;
+
+      // Busca a autorização no Firestore
+      const userDoc = await getDoc(doc(db, "usuarios", uid));
+
+      if (userDoc.exists() && userDoc.data().aprovado === true) {
+        showMsg("✅ Login realizado! Entrando...", "suc");
         setTimeout(() => window.location.href = "index.html", 1000);
+      } else {
+        showMsg("⚠️ Sua conta aguarda aprovação manual do administrador.");
+        await signOut(auth);
       }
-    } catch (e) { 
-      let msg = "E-mail ou senha incorretos.";
-      if(e.code === 'auth/user-not-found') msg = "Usuário não encontrado.";
-      if(e.code === 'auth/wrong-password') msg = "Senha incorreta.";
-      showMsg(msg); 
-    } finally {
-      btnLogin.disabled = false;
-      btnLogin.textContent = "Entrar";
+    } catch (e) {
+      showMsg("E-mail ou senha incorretos.");
     }
   };
-
-  // Função de Registro
-  btnReg.onclick = async () => {
-    const email = emailInput.value;
-    const senha = senhaInput.value;
-    
-    if(!email || !senha) return showMsg("Preencha e-mail e senha para criar conta.");
-    if(senha.length < 6) return showMsg("A senha deve ter no mínimo 6 dígitos.");
-
-    btnReg.disabled = true;
-    btnReg.textContent = "Criando...";
-
-    try {
-      const res = await createUserWithEmailAndPassword(auth, email, senha);
-      await sendEmailVerification(res.user);
-      
-      // Limpa campos
-      emailInput.value = "";
-      senhaInput.value = "";
-      
-      showMsg("✅ Conta criada! Enviamos um link de confirmação para seu e-mail.\nPor favor, confirme antes de entrar.", false);
-      
-      // Opcional: Desabilitar botão de login até confirmar (visual apenas)
-      btnLogin.disabled = true;
-      btnLogin.textContent = "Aguardando confirmação...";
-      subtitle.textContent = "Verifique seu e-mail";
-      
-    } catch (e) { 
-      let msg = "Erro ao criar conta.";
-      if(e.code === 'auth/email-already-in-use') msg = "Este e-mail já está em uso.";
-      showMsg(msg + " (" + e.code + ")"); 
-    } finally {
-      btnReg.disabled = false;
-      btnReg.textContent = "Criar nova conta";
-    }
-  };
-
-  // Função Recuperar Senha
-  window.recuperarSenha = async (e) => {
-    e.preventDefault();
-    const email = emailInput.value;
-    
-    if(!email) return showMsg("Digite seu e-mail acima para recuperar a senha.");
-
-    try {
-      await sendPasswordResetEmail(auth, email);
-      showMsg("✅ Enviamos um link para redefinir sua senha para " + email, false);
-      senhaInput.value = "";
-      senhaInput.focus();
-    } catch (error) {
-      showMsg("Erro: " + error.message);
-    }
-  };
-
-  // Monitoramento de Estado
-  onAuthStateChanged(auth, (user) => {
-    if(user && user.emailVerified) {
-      window.location.href = "index.html";
-    }
-  });
 </script>
 </body>
 </html>
