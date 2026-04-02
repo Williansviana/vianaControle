@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <link rel="shortcut icon" href="./img/money-bag-emoji.jpg" type="image/x-icon">
-  <title>💰 Controle Financeiro</title>
+  <title>💰 Viana Controle</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
   <style>
@@ -16,7 +16,30 @@
     label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 4px; }
     input { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; }
     .btn-submit { background: #1a73e8; color: white; border: none; padding: 10px; border-radius: 6px; width: 100%; cursor: pointer; font-weight: 600; margin-top: 5px; }
-    .btn-cancel { background: #6c757d; color: white; border: none; padding: 8px; border-radius: 6px; width: 100%; margin-top: 5px; display: none; cursor: pointer; }
+    
+    /* Estilos de Status das Despesas */
+    .expense-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid #eee; background: white; transition: 0.3s; border-left: 4px solid transparent; }
+    
+    /* PAGO: Verde */
+    .expense-item.pago { border-left-color: #34a853; background: #e6f4ea; opacity: 0.8; }
+    .expense-item.pago strong { color: #1e8e3e; }
+
+    /* ATRASADO: Vermelho */
+    .expense-item.atrasado { border-left-color: #ea4335; background: #fdecea; }
+    .expense-item.atrasado strong { color: #d93025; }
+
+    .expense-info span { display: block; font-size: 14px; font-weight: 500; }
+    .expense-info small { color: #777; font-size: 11px; }
+    .expense-actions { display: flex; gap: 8px; }
+    .expense-actions button { border: none; background: #f0f2f5; padding: 6px; border-radius: 5px; cursor: pointer; font-size: 12px; }
+    .btn-pay { color: #34a853; font-weight: bold; }
+    .btn-del { color: #ea4335; }
+    
+    /* Calendário e Resumo */
+    .resumo { display: flex; gap: 10px; margin-bottom: 15px; }
+    .resumo-card { flex: 1; padding: 10px; border-radius: 8px; text-align: center; font-size: 12px; }
+    .resumo-card.p { background: #fff3cd; color: #856404; }
+    .resumo-card.ok { background: #d4edda; color: #155724; }
     .mini-calendar { border: 1px solid #eee; border-radius: 10px; overflow: hidden; margin-bottom: 15px; background: #fff; }
     .cal-header { display: flex; justify-content: space-between; align-items: center; background: #1a73e8; color: white; padding: 8px; font-size: 13px; }
     .cal-header button { background: none; border: none; color: white; cursor: pointer; font-weight: bold; padding: 0 10px; }
@@ -25,22 +48,8 @@
     .cal-num { padding: 6px 0; border-bottom: 1px solid #f9f9f9; position: relative; }
     .has-event::after { content: ''; position: absolute; bottom: 3px; left: 50%; transform: translateX(-50%); width: 4px; height: 4px; background: #1a73e8; border-radius: 50%; }
     .cal-today { background: #e8f0fe; color: #1a73e8; font-weight: bold; border-radius: 4px; }
-    .list-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-    .list-header h3 { font-size: 14px; margin: 0; }
-    .filter-btn { font-size: 11px; background: #f0f2f5; border: 1px solid #ddd; padding: 5px 12px; border-radius: 20px; cursor: pointer; color: #555; }
+    .filter-btn { font-size: 11px; background: #f0f2f5; border: 1px solid #ddd; padding: 5px 12px; border-radius: 20px; cursor: pointer; }
     .filter-btn.active { background: #ea4335; color: white; border-color: #ea4335; }
-    .expense-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid #eee; background: white; }
-    .expense-item.pago { opacity: 0.5; background: #fcfcfc; }
-    .expense-info span { display: block; font-size: 14px; font-weight: 500; }
-    .expense-info small { color: #777; font-size: 11px; }
-    .expense-actions { display: flex; gap: 8px; }
-    .expense-actions button { border: none; background: #f0f2f5; padding: 6px; border-radius: 5px; cursor: pointer; font-size: 12px; }
-    .btn-pay { color: #34a853; font-weight: bold; }
-    .btn-del { color: #ea4335; }
-    .resumo { display: flex; gap: 10px; margin-bottom: 15px; }
-    .resumo-card { flex: 1; padding: 10px; border-radius: 8px; text-align: center; font-size: 12px; }
-    .resumo-card.p { background: #fff3cd; color: #856404; }
-    .resumo-card.ok { background: #d4edda; color: #155724; }
   </style>
 </head>
 <body>
@@ -56,15 +65,14 @@
     </div>
     <div class="form-group"><label>Data da 1ª Parcela</label><input type="date" id="dataBase" required /></div>
     <button type="submit" class="btn-submit" id="btn-save">Salvar Lançamento</button>
-    <button type="button" class="btn-cancel" id="btn-cancel">Cancelar Edição</button>
   </form>
 
   <div class="resumo" id="resumo"></div>
   <div class="mini-calendar" id="calendar"></div>
 
   <div class="expense-list">
-    <div class="list-header">
-      <h3>Contas do Mês</h3>
+    <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+      <h3 style="font-size: 14px; margin: 0;">Contas do Mês</h3>
       <button id="filter-btn" class="filter-btn">Apenas Pendentes</button>
     </div>
     <div id="items-container"></div>
@@ -92,16 +100,13 @@
   const auth = getAuth(app);
 
   let despesas = [];
-  let editId = null;
   let mesRef = new Date().toISOString().slice(0, 7);
   let filtrarPendentes = false;
 
   const formatMoeda = (v) => v.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
 
-  // Monitorar Autenticação
   onAuthStateChanged(auth, (user) => {
     if (!user) { window.location.href = "login.html"; return; }
-    
     const q = query(collection(db, "despesas"), where("userId", "==", user.uid));
     onSnapshot(q, (snap) => {
       despesas = snap.docs.map(d => ({ id: d.id, ...d.data() }));
@@ -114,25 +119,13 @@
     renderList();
   }
 
-  // Calendário
   function renderCalendar() {
     const [ano, mes] = mesRef.split('-').map(Number);
     const primDia = new Date(ano, mes - 1, 1).getDay();
     const ultDia = new Date(ano, mes, 0).getDate();
-    
-    const diasComGasto = despesas.flatMap(d => d.parcelas.map(p => p.date))
-                                 .filter(d => d.startsWith(mesRef))
-                                 .map(d => parseInt(d.split('-')[2]));
+    const diasComGasto = despesas.flatMap(d => d.parcelas.map(p => p.date)).filter(d => d.startsWith(mesRef)).map(d => parseInt(d.split('-')[2]));
 
-    let html = `
-      <div class="cal-header">
-        <button id="prevMonth">❮</button>
-        <span>${new Date(ano, mes - 1, 1).toLocaleDateString('pt-BR', {month:'long', year:'numeric'}).toUpperCase()}</span>
-        <button id="nextMonth">❯</button>
-      </div>
-      <div class="cal-grid">
-        <div class="cal-day-name">D</div><div class="cal-day-name">S</div><div class="cal-day-name">T</div>
-        <div class="cal-day-name">Q</div><div class="cal-day-name">Q</div><div class="cal-day-name">S</div><div class="cal-day-name">S</div>`;
+    let html = `<div class="cal-header"><button id="prevMonth">❮</button><span>${new Date(ano, mes - 1, 1).toLocaleDateString('pt-BR', {month:'long', year:'numeric'}).toUpperCase()}</span><button id="nextMonth">❯</button></div><div class="cal-grid"><div class="cal-day-name">D</div><div class="cal-day-name">S</div><div class="cal-day-name">T</div><div class="cal-day-name">Q</div><div class="cal-day-name">Q</div><div class="cal-day-name">S</div><div class="cal-day-name">S</div>`;
     
     for(let i=0; i<primDia; i++) html += `<div></div>`;
     for(let d=1; d<=ultDia; d++) {
@@ -141,7 +134,6 @@
       html += `<div class="cal-num ${isHoje?'cal-today':''} ${diasComGasto.includes(d)?'has-event':''}">${d}</div>`;
     }
     document.getElementById('calendar').innerHTML = html + `</div>`;
-
     document.getElementById('prevMonth').onclick = () => mudarMes(-1);
     document.getElementById('nextMonth').onclick = () => mudarMes(1);
   }
@@ -152,9 +144,9 @@
     renderAll();
   }
 
-  // Lista de Itens
   function renderList() {
     const container = document.getElementById('items-container');
+    const hoje = new Date().toISOString().slice(0, 10);
     container.innerHTML = '';
     let pTotal = 0, okTotal = 0;
 
@@ -163,15 +155,26 @@
                                 .sort((a,b) => a.date.localeCompare(b.date));
 
     parcelasMes.forEach(p => p.paid ? okTotal += p.value : pTotal += p.value);
-    
     if(filtrarPendentes) parcelasMes = parcelasMes.filter(p => !p.paid);
 
     parcelasMes.forEach(item => {
       const div = document.createElement('div');
-      div.className = `expense-item ${item.paid?'pago':''}`;
+      
+      // Lógica de Cores por Status
+      let statusClass = "";
+      let icon = "";
+      if (item.paid) {
+        statusClass = "pago";
+        icon = "✅";
+      } else if (item.date < hoje) {
+        statusClass = "atrasado";
+        icon = "⚠️";
+      }
+
+      div.className = `expense-item ${statusClass}`;
       div.innerHTML = `
         <div class="expense-info">
-          <span>${item.desc}</span>
+          <span>${icon} ${item.desc}</span>
           <small>${item.date.split('-').reverse().join('/')} • Parcela ${item.num}/${item.total}</small>
           <strong>R$ ${formatMoeda(item.value)}</strong>
         </div>
@@ -206,7 +209,6 @@
     }
   }
 
-  // Formulário
   document.getElementById('form-despesa').onsubmit = async (e) => {
     e.preventDefault();
     const desc = document.getElementById('desc').value;
@@ -217,8 +219,7 @@
     const parcelas = [];
     for(let i=0; i<qtd; i++) {
       const dt = new Date(y, (m - 1) + i, d);
-      if(dt.getDate() !== d) dt.setDate(0); // Ajuste para meses curtos
-      
+      if(dt.getDate() !== d) dt.setDate(0);
       parcelas.push({
         id: Math.random().toString(36).substr(2,9),
         num: i+1, total: qtd, value: valor, paid: false,
@@ -229,7 +230,6 @@
     await addDoc(collection(db, "despesas"), {
       desc, parcelas, userId: auth.currentUser.uid, createdAt: new Date()
     });
-    
     e.target.reset();
     document.getElementById('qtd').value = 1;
   };
