@@ -2,9 +2,8 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <link rel="shortcut icon" href="./img/money-bag-emoji.jpg" type="image/x-icon">
-  <title>💰 Viana Controle - Login</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>💰 Viana Controle - Acesso</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <style>
@@ -19,50 +18,36 @@
     }
     h1 { font-size: 22px; color: #333; margin-bottom: 20px; }
     
-    .step-box {
-      background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 12px; padding: 20px; margin-bottom: 20px; text-align: left;
+    /* Alternância de Abas */
+    .tabs-nav { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #eee; }
+    .tab-btn { 
+      flex: 1; padding: 10px; border: none; background: none; cursor: pointer; font-weight: 600; color: #666; transition: 0.3s; 
     }
-    .step-title { font-weight: 600; color: #1a73e8; margin-bottom: 10px; display: block; font-size: 15px; }
-    
+    .tab-btn.active { color: #1a73e8; border-bottom: 2px solid #1a73e8; }
+
+    .content-section { display: none; text-align: left; }
+    .content-section.active { display: block; }
+
     input { 
-      width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; transition: 0.3s;
+      width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; 
     }
-    input:focus { border-color: #1a73e8; outline: none; box-shadow: 0 0 0 3px rgba(26,115,232,0.1); }
 
     .btn { 
       width: 100%; padding: 14px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; 
-      display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.3s ease; font-size: 14px; text-decoration: none;
+      display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.3s; font-size: 14px;
     }
-    .btn-pix { background: #6f42c1; color: white; }
-    .btn-pix:hover { background: #5a32a3; }
-    
-    .btn-copy { background: #e2e8f0; color: #475569; margin-top: 10px; font-size: 12px; }
-    
-    /* Ajuste no Botão WhatsApp */
-    .btn-whatsapp { 
-        background: #25D366; 
-        color: white; 
-        margin-top: 10px; 
-        display: none; /* Começa escondido, aparece via JS */
-    }
-    .btn-whatsapp:hover { background: #1ebc57; opacity: 0.9; }
+    .btn-login { background: #1a73e8; color: white; }
+    .btn-pix { background: #6f42c1; color: white; margin-bottom: 15px; }
+    .btn-whatsapp { background: #25D366; color: white; display: none; margin-top: 10px; }
 
-    .btn-login { background: #1a73e8; color: white; margin-top: 10px; }
-    .btn-login:disabled { background: #ccc; cursor: not-allowed; }
-
-    #area-pix { 
-      display: none; margin-top: 15px; text-align: center; border-top: 1px solid #eee; padding-top: 15px;
-    }
-    #qrcode { display: inline-block; padding: 10px; background: white; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 10px; }
-    
-    .pix-key-display {
-      font-family: monospace; font-size: 10px; background: #f1f5f9; padding: 10px; border-radius: 4px;
-      word-break: break-all; display: block; color: #64748b; cursor: pointer; border: 1px dashed #cbd5e1;
+    #qrcode { text-align: center; margin: 15px 0; display: none; }
+    .pix-box { 
+        background: #f1f5f9; padding: 10px; border-radius: 6px; font-size: 11px; 
+        word-break: break-all; font-family: monospace; border: 1px dashed #cbd5e1; cursor: pointer;
     }
 
-    .msg { font-size: 13px; margin-top: 15px; display: none; padding: 12px; border-radius: 6px; line-height: 1.4; }
+    .msg { font-size: 13px; margin-top: 15px; display: none; padding: 12px; border-radius: 6px; }
     .err { background: #fdecea; color: #ea4335; border: 1px solid #fad2cf; }
-    .suc { background: #e6f4ea; color: #1e8e3e; border: 1px solid #ceead6; }
   </style>
 </head>
 <body>
@@ -70,35 +55,36 @@
 <div class="login-container">
   <h1>💰 Viana Controle</h1>
 
-  <div class="step-box">
-    <span class="step-title">1️⃣ Pagamento (R$ 5,00)</span>
-    <button class="btn btn-pix" id="btnGerarPix" onclick="gerarPix()">Gerar QR Code Pix</button>
-    
-    <div id="area-pix">
-      <div id="qrcode"></div>
-      <p style="font-size: 11px; color: #666; margin-bottom: 5px;">Clique no código abaixo para copiar:</p>
-      <span class="pix-key-display" id="pix-text" onclick="copiarPix()"></span>
-      <button class="btn btn-copy" id="btnCopiar" onclick="copiarPix()">📋 Copiar Código Pix</button>
-    </div>
+  <div class="tabs-nav">
+    <button class="tab-btn active" onclick="switchTab('login')">Entrar</button>
+    <button class="tab-btn" onclick="switchTab('pagamento')">Pagar Pix</button>
   </div>
 
-  <div class="step-box">
-    <span class="step-title">2️⃣ Após o pagamento, enviar mensagem para liberar acesso.</span>
-    <input type="text" id="nome-usuario" placeholder="Seu Nome Completo" onkeyup="validarWhatsapp()">
-    
-    <button id="btn-whatsapp" class="btn btn-whatsapp" onclick="enviarWhatsapp()">
-      📲 Enviar Comprovante no WhatsApp
-    </button>
-  </div>
-
-  <div class="step-box" style="background: #f0f7ff; border-color: #1a73e8;">
-    <span class="step-title">3️⃣ Acesso ao Sistema</span>
+  <div id="section-login" class="content-section active">
     <input type="email" id="email" placeholder="E-mail">
     <input type="password" id="senha" placeholder="Senha">
-    <button class="btn btn-login" id="btnLogin">Entrar</button>
+    <button class="btn btn-login" id="btnLogin">Acessar Sistema</button>
+  </div>
+
+  <div id="section-pagamento" class="content-section">
+    <p style="font-size: 13px; color: #666;">Gere o código abaixo e envie o comprovante para liberar seu acesso.</p>
+    
+    <button class="btn btn-pix" onclick="gerarPix()">Gerar QR Code (R$ 5,00)</button>
+    
+    <div id="qrcode"></div>
+    <div id="pix-area" style="display:none;">
+        <div class="pix-box" id="pix-text" onclick="copiarPix()"></div>
+        <p style="font-size: 10px; color: #888; margin-top: 5px;">Clique no código acima para copiar</p>
+    </div>
+
+    <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+    
+    <label style="font-size: 12px; font-weight: 600;">Seu nome completo:</label>
+    <input type="text" id="nome-usuario" placeholder="Ex: João Silva" onkeyup="validarZap()">
+    <button id="btn-whatsapp" class="btn btn-whatsapp" onclick="enviarZap()">📲 Enviar Comprovante</button>
   </div>
   
-  <div id="feedback" class="msg"></div>
+  <div id="feedback" class="msg err"></div>
 </div>
 
 <script type="module">
@@ -119,87 +105,75 @@
   const auth = getAuth(app);
   const db = getFirestore(app);
 
-  const WHATSAPP_NUM = "5519996796851";
-  
-  // Substitua pela sua string "Copia e Cola" completa
-  const PIX_COPIA_E_COLA = "00020126360014BR.GOV.BCB.PIX0114+551999679685152040000530398654045.005802BR5901N6001C62070503***63049D51";
+  const PIX_STRING = "00020126360014BR.GOV.BCB.PIX0114+551999679685152040000530398654045.005802BR5901N6001C62070503***63049D51";
 
-  function showMsg(txt, type = 'err') {
-    const fb = document.getElementById('feedback');
-    fb.textContent = txt;
-    fb.className = `msg ${type}`;
-    fb.style.display = "block";
-    setTimeout(() => fb.style.display = "none", 5000);
-  }
-
-  // --- FUNÇÕES GLOBAIS ---
-
-  window.gerarPix = () => {
-    const qrDiv = document.getElementById('qrcode');
-    qrDiv.innerHTML = "";
-    new QRCode(qrDiv, { text: PIX_COPIA_E_COLA, width: 150, height: 150 });
-    document.getElementById('pix-text').textContent = PIX_COPIA_E_COLA;
-    document.getElementById('area-pix').style.display = 'block';
-  };
-
-  window.copiarPix = () => {
-    const pixText = document.getElementById('pix-text').textContent;
-    if(!pixText) return;
-    navigator.clipboard.writeText(pixText).then(() => {
-      const btnCopy = document.getElementById('btnCopiar');
-      const original = btnCopy.innerHTML;
-      btnCopy.innerHTML = "✅ Copiado!";
-      setTimeout(() => btnCopy.innerHTML = original, 2000);
-    });
-  };
-
-  // CORREÇÃO: O botão aparece apenas com o nome preenchido
-  window.validarWhatsapp = () => {
-    const nome = document.getElementById('nome-usuario').value;
-    const btnZap = document.getElementById('btn-whatsapp');
+  // Troca de abas
+  window.switchTab = (tab) => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
     
-    if(nome.trim().length >= 3) {
-      btnZap.style.display = 'flex'; // Exibe o botão
+    if(tab === 'login') {
+      document.getElementById('section-login').classList.add('active');
+      document.querySelectorAll('.tab-btn')[0].classList.add('active');
     } else {
-      btnZap.style.display = 'none'; // Esconde se apagar o nome
+      document.getElementById('section-pagamento').classList.add('active');
+      document.querySelectorAll('.tab-btn')[1].classList.add('active');
     }
   };
 
-  window.enviarWhatsapp = () => {
-    const nome = document.getElementById('nome-usuario').value;
-    const msg = encodeURIComponent(`Olá! Meu nome é ${nome}. Fiz o pagamento de R$ 5,00 para o Viana Controle. Segue o comprovante para liberação!`);
-    window.open(`https://wa.me/${WHATSAPP_NUM}?text=${msg}`, '_blank');
+  // Funções do Pix
+  window.gerarPix = () => {
+    const qrDiv = document.getElementById('qrcode');
+    qrDiv.innerHTML = "";
+    qrDiv.style.display = "block";
+    new QRCode(qrDiv, { text: PIX_STRING, width: 160, height: 160 });
+    document.getElementById('pix-text').textContent = PIX_STRING;
+    document.getElementById('pix-area').style.display = "block";
   };
 
-  // --- LOGIN ---
+  window.copiarPix = () => {
+    navigator.clipboard.writeText(PIX_STRING);
+    alert("Código Pix copiado!");
+  };
+
+  window.validarZap = () => {
+    const nome = document.getElementById('nome-usuario').value;
+    document.getElementById('btn-whatsapp').style.display = nome.length >= 3 ? 'flex' : 'none';
+  };
+
+  window.enviarZap = () => {
+    const nome = document.getElementById('nome-usuario').value;
+    const msg = encodeURIComponent(`Olá! Sou ${nome}. Fiz o pagamento de R$ 5,00. Segue o comprovante para liberar meu acesso.`);
+    window.open(`https://wa.me/5519996796851?text=${msg}`, '_blank');
+  };
+
+  // Lógica de Login
   document.getElementById('btnLogin').onclick = async () => {
     const email = document.getElementById('email').value;
     const senha = document.getElementById('senha').value;
-    const btn = document.getElementById('btnLogin');
+    const fb = document.getElementById('feedback');
 
-    if(!email || !senha) return showMsg("Preencha e-mail e senha.");
-
-    btn.disabled = true;
-    btn.textContent = "Carregando...";
+    if(!email || !senha) {
+        fb.textContent = "Preencha os campos.";
+        fb.style.display = "block";
+        return;
+    }
 
     try {
       const userRes = await signInWithEmailAndPassword(auth, email, senha);
-      const uid = userRes.user.uid;
-      const userDoc = await getDoc(doc(db, "usuarios", uid));
+      const userDoc = await getDoc(doc(db, "usuarios", userRes.user.uid));
 
       if (userDoc.exists() && userDoc.data().aprovado === true) {
-        showMsg("✅ Sucesso!", "suc");
         window.location.href = "index.html";
       } else {
-        showMsg("⚠️ Pagamento não aprovado ainda. Fale conosco no WhatsApp.");
+        fb.textContent = "⚠️ Acesso pendente. Faça o pagamento ou aguarde a liberação.";
+        fb.style.display = "block";
+        switchTab('pagamento'); // Manda para o Pix se não estiver aprovado
         await signOut(auth);
-        btn.disabled = false;
-        btn.textContent = "Entrar";
       }
     } catch (e) {
-      showMsg("Dados incorretos.");
-      btn.disabled = false;
-      btn.textContent = "Entrar";
+      fb.textContent = "Dados incorretos.";
+      fb.style.display = "block";
     }
   };
 </script>
