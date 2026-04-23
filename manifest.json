@@ -1,0 +1,20 @@
+{
+  "name": "Viana Controle Financeiro",
+  "short_name": "Viana",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1a73e8",
+  "icons": [
+    {
+      "src": "./img/logo oficial.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "./img/logo oficial.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
