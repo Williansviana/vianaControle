@@ -2,68 +2,95 @@
 <html lang="pt-Br">
 <head>
   <meta charset="UTF-8" />
-  <title>Viana Controle</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>Viana Controle PRO</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#1a73e8">
-  
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Viana">
   <link rel="apple-touch-icon" href="./img/logo oficial.png">
-  
-  <link rel="icon" href="./img/logo oficial.png" type="image/png">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
-  
-  <style>
-    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-    body { font-family: 'Inter', sans-serif; margin: 0; background: #f4f7f9; color: #333; padding: 10px; padding-bottom: 30px; }
-    
-    .app { max-width: 500px; margin: 0 auto; padding: 15px; background: white; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-    h1 { text-align: center; font-size: 20px; color: #1a73e8; margin-bottom: 15px; }
-    
-    form { background: #f8f9fa; padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid #eee; }
-    .form-group { margin-bottom: 10px; }
-    label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 4px; }
-    
-    /* Input com 16px para evitar zoom automático no iOS */
-    input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; outline: none; }
-    input:focus { border-color: #1a73e8; }
-    
-    .btn-submit { background: #1a73e8; color: white; border: none; padding: 12px; border-radius: 8px; width: 100%; cursor: pointer; font-weight: 600; margin-top: 5px; transition: 0.2s; font-size: 14px; }
-    .btn-submit:active { transform: scale(0.96); opacity: 0.9; }
-    
-    /* Lista de Gastos */
-    .expense-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid #eee; background: white; border-left: 4px solid #ddd; margin-bottom: 4px; border-radius: 4px; }
-    .expense-item.pago { border-left-color: #34a853; background: #f0fdf4; }
-    .expense-item.atrasado { border-left-color: #ea4335; background: #fff5f5; }
+  <link rel="icon" href="./img/logo oficial.png">
 
-    .expense-info span { display: block; font-size: 14px; font-weight: 600; color: #444; }
-    .expense-info small { color: #777; font-size: 11px; }
-    .expense-actions { display: flex; gap: 10px; }
-    .expense-actions button { border: none; background: #f1f3f4; padding: 8px; border-radius: 6px; cursor: pointer; font-size: 16px; }
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <style>
+    :root {
+      --primary: #1a73e8;
+      --bg: #f4f7f9;
+      --card: #ffffff;
+      --text: #1a1a1a;
+      --border: #eeeeee;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #121212;
+        --card: #1e1e1e;
+        --text: #f0f0f0;
+        --border: #333333;
+      }
+    }
+
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     
+    body { 
+      font-family: 'Inter', sans-serif; 
+      margin: 0; padding: 15px; 
+      background: var(--bg); 
+      color: var(--text); 
+      transition: 0.3s;
+    }
+
+    .app { 
+      max-width: 500px; margin: 0 auto; 
+      padding: 20px; background: var(--card); 
+      border-radius: 28px; 
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+
+    h1 { text-align: center; font-size: 22px; color: var(--primary); margin-bottom: 20px; }
+
+    /* Estilo dos Inputs */
+    form { background: var(--bg); padding: 15px; border-radius: 18px; margin-bottom: 20px; }
+    .form-group { margin-bottom: 12px; }
+    label { display: block; font-size: 11px; font-weight: 700; margin-bottom: 4px; opacity: 0.7; }
+    input { 
+      width: 100%; padding: 12px; border: 1px solid var(--border); 
+      border-radius: 10px; background: var(--card); color: var(--text);
+    }
+
+    /* Botões */
+    .btn-primary { 
+      background: var(--primary); color: white; border: none; 
+      padding: 14px; border-radius: 12px; width: 100%; 
+      font-weight: 600; cursor: pointer; transition: 0.2s;
+    }
+    .btn-primary:active { transform: scale(0.96); }
+
+    .btn-outline {
+      background: none; border: 1px solid var(--border); color: var(--text);
+      padding: 10px; border-radius: 10px; width: 100%; margin-top: 10px; cursor: pointer;
+    }
+
+    /* Lista de Despesas */
+    .expense-item { 
+      display: flex; justify-content: space-between; align-items: center; 
+      padding: 14px; border-bottom: 1px solid var(--border);
+    }
+    .status-badge {
+      padding: 3px 7px; border-radius: 5px; font-size: 10px; font-weight: 700; color: white;
+    }
+    .badge-pago { background: #34a853; }
+    .badge-atrasado { background: #ea4335; }
+
+    #chart-area { max-height: 180px; margin-bottom: 20px; }
     .resumo { display: flex; gap: 10px; margin-bottom: 15px; }
-    .resumo-card { flex: 1; padding: 12px; border-radius: 10px; text-align: center; font-size: 11px; font-weight: 500; }
-    .resumo-card b { font-size: 14px; display: block; margin-top: 4px; }
+    .resumo-card { flex: 1; padding: 15px; border-radius: 15px; text-align: center; font-size: 12px; font-weight: bold; }
     .resumo-card.p { background: #fff3cd; color: #856404; }
     .resumo-card.ok { background: #d4edda; color: #155724; }
-    
-    /* Calendário */
-    .mini-calendar { border: 1px solid #eee; border-radius: 12px; overflow: hidden; margin-bottom: 15px; background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
-    .cal-header { display: flex; justify-content: space-between; align-items: center; background: #1a73e8; color: white; padding: 10px; font-size: 13px; font-weight: 600; }
-    .cal-header button { background: rgba(255,255,255,0.2); border: none; color: white; cursor: pointer; padding: 4px 12px; border-radius: 4px; font-size: 14px; }
-    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-size: 11px; }
-    .cal-day-name { background: #f8f9fa; padding: 8px 0; color: #777; font-weight: bold; border-bottom: 1px solid #eee; }
-    .cal-num { padding: 10px 0; border-bottom: 1px solid #f9f9f9; position: relative; }
-    .has-event::after { content: ''; position: absolute; bottom: 4px; left: 50%; transform: translateX(-50%); width: 4px; height: 4px; background: #1a73e8; border-radius: 50%; }
-    .cal-today { background: #e8f0fe; color: #1a73e8; font-weight: bold; border-radius: 6px; }
-    
-    .filter-btn { font-size: 11px; background: #fff; border: 1px solid #ddd; padding: 6px 14px; border-radius: 20px; cursor: pointer; font-weight: 600; transition: 0.3s; }
-    .filter-btn.active { background: #ea4335; color: white; border-color: #ea4335; }
-
-    #btn-logout { width: 100%; margin-top: 20px; border: none; background: #fff; padding: 10px; border-radius: 8px; color: #ea4335; cursor: pointer; font-size: 12px; font-weight: 600; border: 1px solid #fdecea; }
   </style>
 </head>
 <body>
@@ -71,28 +98,25 @@
 <div class="app">
   <h1>💰 Viana Controle</h1>
 
-  <form id="form-despesa">
-    <div class="form-group"><label>Descrição</label><input type="text" id="desc" required placeholder="Ex: Internet" /></div>
-    <div style="display:flex; gap:10px">
-      <div class="form-group" style="flex:1"><label>Valor R$</label><input type="number" id="valor" step="0.01" required placeholder="0,00" /></div>
-      <div class="form-group" style="flex:1"><label>Parcelas</label><input type="number" id="qtd" value="1" min="1" /></div>
-    </div>
-    <div class="form-group"><label>Vencimento (1ª Parcela)</label><input type="date" id="dataBase" required /></div>
-    <button type="submit" class="btn-submit" id="btn-save">Salvar Lançamento</button>
-  </form>
+  <div id="chart-area"><canvas id="myChart"></canvas></div>
 
   <div class="resumo" id="resumo"></div>
-  <div class="mini-calendar" id="calendar"></div>
 
-  <div class="expense-list">
-    <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-      <h3 style="font-size: 14px; margin: 0; color: #555;">Contas do Mês</h3>
-      <button id="filter-btn" class="filter-btn">Apenas Pendentes</button>
+  <form id="form-despesa">
+    <div class="form-group"><label>Descrição</label><input type="text" id="desc" required placeholder="Ex: Aluguel" /></div>
+    <div style="display:flex; gap:10px">
+      <div class="form-group" style="flex:2"><label>Valor R$</label><input type="number" id="valor" step="0.01" required /></div>
+      <div class="form-group" style="flex:1"><label>Parc.</label><input type="number" id="qtd" value="1" min="1" /></div>
     </div>
-    <div id="items-container"></div>
-  </div>
+    <div class="form-group"><label>Data Vencimento</label><input type="date" id="dataBase" required /></div>
+    <button type="submit" class="btn-primary">Salvar Lançamento</button>
+  </form>
 
-  <button id="btn-logout">Sair da conta</button>
+  <button class="btn-outline" onclick="exportarPDF()">📄 Gerar Relatório PDF</button>
+
+  <div id="items-container"></div>
+
+  <button id="btn-logout" class="btn-outline" style="border:none; color:#ea4335; margin-top:20px;">Sair da Conta</button>
 </div>
 
 <script type="module">
@@ -115,16 +139,11 @@
 
   // Registro do Service Worker
   if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js').catch(err => console.log("SW Fail:", err));
-    });
+    window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js'));
   }
 
   let despesas = [];
-  let mesRef = new Date().toISOString().slice(0, 7);
-  let filtrarPendentes = false;
-
-  const formatMoeda = (v) => v.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
+  let chartInstance = null;
 
   onAuthStateChanged(auth, (user) => {
     if (!user) { window.location.href = "login.html"; return; }
@@ -136,143 +155,86 @@
   });
 
   function renderAll() {
-    renderCalendar();
-    renderList();
-  }
-
-  function renderCalendar() {
-    const [ano, mes] = mesRef.split('-').map(Number);
-    const primDia = new Date(ano, mes - 1, 1).getDay();
-    const ultDia = new Date(ano, mes, 0).getDate();
-    const diasComGasto = despesas.flatMap(d => d.parcelas.map(p => p.date)).filter(d => d.startsWith(mesRef)).map(d => parseInt(d.split('-')[2]));
-
-    let html = `<div class="cal-header"><button id="prevMonth">❮</button><span>${new Date(ano, mes - 1, 1).toLocaleDateString('pt-BR', {month:'long', year:'numeric'}).toUpperCase()}</span><button id="nextMonth">❯</button></div><div class="cal-grid"><div class="cal-day-name">D</div><div class="cal-day-name">S</div><div class="cal-day-name">T</div><div class="cal-day-name">Q</div><div class="cal-day-name">Q</div><div class="cal-day-name">S</div><div class="cal-day-name">S</div>`;
-    
-    for(let i=0; i<primDia; i++) html += `<div></div>`;
-    for(let d=1; d<=ultDia; d++) {
-      const dataIso = `${ano}-${String(mes).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-      const isHoje = new Date().toISOString().slice(0,10) === dataIso;
-      html += `<div class="cal-num ${isHoje?'cal-today':''} ${diasComGasto.includes(d)?'has-event':''}">${d}</div>`;
-    }
-    document.getElementById('calendar').innerHTML = html + `</div>`;
-    document.getElementById('prevMonth').onclick = () => mudarMes(-1);
-    document.getElementById('nextMonth').onclick = () => mudarMes(1);
-  }
-
-  function mudarMes(n) {
-    const [ano, mes] = mesRef.split('-').map(Number);
-    mesRef = new Date(ano, (mes - 1) + n, 1).toISOString().slice(0, 7);
-    renderAll();
-  }
-
-  function renderList() {
     const container = document.getElementById('items-container');
     const hoje = new Date().toISOString().slice(0, 10);
     container.innerHTML = '';
     let pTotal = 0, okTotal = 0;
 
-    let parcelasMes = despesas.flatMap(d => d.parcelas.map(p => ({...p, desc: d.desc, dId: d.id})))
-                                .filter(p => p.date.startsWith(mesRef))
-                                .sort((a,b) => a.date.localeCompare(b.date));
+    const parcelas = despesas.flatMap(d => d.parcelas.map(p => ({...p, desc: d.desc, dId: d.id})))
+                             .sort((a,b) => a.date.localeCompare(b.date));
 
-    parcelasMes.forEach(p => p.paid ? okTotal += p.value : pTotal += p.value);
-    if(filtrarPendentes) parcelasMes = parcelasMes.filter(p => !p.paid);
-
-    if(parcelasMes.length === 0) {
-      container.innerHTML = '<p style="text-align:center; font-size:12px; color:#999; margin-top:20px;">Nenhum lançamento neste mês.</p>';
-    }
-
-    parcelasMes.forEach(item => {
+    parcelas.forEach(item => {
+      item.paid ? okTotal += item.value : pTotal += item.value;
       const div = document.createElement('div');
-      let statusClass = item.paid ? "pago" : (item.date < hoje ? "atrasado" : "");
-      let icon = item.paid ? "✅" : (item.date < hoje ? "⚠️" : "🕒");
-
-      div.className = `expense-item ${statusClass}`;
+      div.className = 'expense-item';
+      const status = item.paid ? '<span class="status-badge badge-pago">PAGO</span>' : (item.date < hoje ? '<span class="status-badge badge-atrasado">ATRASADO</span>' : '');
+      
       div.innerHTML = `
-        <div class="expense-info">
-          <span>${item.desc}</span>
-          <small>${item.date.split('-').reverse().join('/')} • Parcela ${item.num}/${item.total}</small>
-          <strong style="font-size:13px; color:#1a73e8">R$ ${formatMoeda(item.value)}</strong>
+        <div>
+          <span><strong>${item.desc}</strong> ${status}</span><br>
+          <small>${item.date.split('-').reverse().join('/')} | R$ ${item.value.toFixed(2)}</small>
         </div>
-        <div class="expense-actions">
-          ${!item.paid ? `<button title="Pagar" style="color:#34a853" data-did="${item.dId}" data-pid="${item.id}" class="btn-pay-act">✔</button>` : ''}
-          <button title="Excluir" style="color:#ea4335" data-did="${item.dId}" class="btn-del-act">🗑</button>
+        <div>
+          ${!item.paid ? `<button onclick="pagar('${item.dId}','${item.id}')" style="border:none; background:none; cursor:pointer;">✅</button>` : ''}
+          <button onclick="excluir('${item.dId}')" style="border:none; background:none; cursor:pointer;">🗑️</button>
         </div>`;
       container.appendChild(div);
     });
 
-    // Eventos de clique delegados
-    container.addEventListener('click', (e) => {
-      const btnPay = e.target.closest('.btn-pay-act');
-      const btnDel = e.target.closest('.btn-del-act');
-      
-      if(btnPay) alternarPagamento(btnPay.dataset.did, btnPay.dataset.pid);
-      if(btnDel) excluirGasto(btnDel.dataset.did);
-    });
-
     document.getElementById('resumo').innerHTML = `
-      <div class="resumo-card p">Pendente<b>R$ ${formatMoeda(pTotal)}</b></div>
-      <div class="resumo-card ok">Pago<b>R$ ${formatMoeda(okTotal)}</b></div>`;
+      <div class="resumo-card p">Pendente<br>R$ ${pTotal.toFixed(2)}</div>
+      <div class="resumo-card ok">Pago<br>R$ ${okTotal.toFixed(2)}</div>`;
+    
+    atualizarGrafico(okTotal, pTotal);
   }
 
-  async function alternarPagamento(dId, pId) {
+  function atualizarGrafico(pagos, pendentes) {
+    const ctx = document.getElementById('myChart').getContext('2d');
+    if (chartInstance) chartInstance.destroy();
+    chartInstance = new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        datasets: [{ data: [pagos, pendentes], backgroundColor: ['#34a853', '#ea4335'], borderWidth: 0 }]
+      },
+      options: { cutout: '80%' }
+    });
+  }
+
+  window.pagar = async (dId, pId) => {
     const d = despesas.find(x => x.id === dId);
-    const novasParcelas = d.parcelas.map(p => p.id === pId ? {...p, paid: true} : p);
-    await updateDoc(doc(db, "despesas", dId), { parcelas: novasParcelas });
-  }
+    const novas = d.parcelas.map(p => p.id === pId ? {...p, paid: true} : p);
+    await updateDoc(doc(db, "despesas", dId), { parcelas: novas });
+  };
 
-  async function excluirGasto(id) {
-    if(confirm("Deseja excluir todo este lançamento?")) await deleteDoc(doc(db, "despesas", id));
-  }
+  window.excluir = async (id) => {
+    if(confirm("Excluir?")) await deleteDoc(doc(db, "despesas", id));
+  };
 
   document.getElementById('form-despesa').onsubmit = async (e) => {
     e.preventDefault();
-    const btnSave = document.getElementById('btn-save');
-    btnSave.disabled = true;
-    btnSave.textContent = "Salvando...";
-
     const desc = document.getElementById('desc').value;
     const valor = parseFloat(document.getElementById('valor').value);
     const qtd = parseInt(document.getElementById('qtd').value);
     const [y, m, d] = document.getElementById('dataBase').value.split('-').map(Number);
-
     const parcelas = [];
     for(let i=0; i<qtd; i++) {
       const dt = new Date(y, (m - 1) + i, d);
-      if(dt.getDate() !== d) dt.setDate(0); // Ajuste para meses curtos
-      parcelas.push({
-        id: Math.random().toString(36).substr(2,9),
-        num: i+1, total: qtd, value: valor, paid: false,
-        date: dt.toISOString().slice(0,10)
-      });
+      parcelas.push({ id: Math.random().toString(36).substr(2,9), num: i+1, total: qtd, value: valor, paid: false, date: dt.toISOString().slice(0,10) });
     }
-    
-    try {
-      await addDoc(collection(db, "despesas"), { 
-        desc, 
-        parcelas, 
-        userId: auth.currentUser.uid, 
-        createdAt: new Date() 
-      });
-      e.target.reset();
-      document.getElementById('qtd').value = 1;
-    } catch (err) {
-      alert("Erro ao salvar lançamento.");
-    } finally {
-      btnSave.disabled = false;
-      btnSave.textContent = "Salvar Lançamento";
-    }
+    await addDoc(collection(db, "despesas"), { desc, parcelas, userId: auth.currentUser.uid });
+    e.target.reset();
   };
 
-  document.getElementById('filter-btn').onclick = function() {
-    filtrarPendentes = !filtrarPendentes;
-    this.classList.toggle('active');
-    renderList();
+  window.exportarPDF = () => {
+    const { jsPDF } = window.jspdf;
+    const docPdf = new jsPDF();
+    docPdf.text("Relatório Viana Controle", 20, 20);
+    let y = 30;
+    despesas.forEach(d => { docPdf.text(`${d.desc} - R$ ${d.parcelas[0].value}`, 20, y); y+=10; });
+    docPdf.save("Relatorio.pdf");
   };
 
-  document.getElementById('btn-logout').onclick = () => {
-    if(confirm("Deseja sair da conta?")) signOut(auth);
-  };
+  document.getElementById('btn-logout').onclick = () => signOut(auth);
 </script>
 </body>
 </html>

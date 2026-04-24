@@ -1,13 +1,11 @@
 {
-  "id": "/viana-controle/",
   "name": "Viana Controle Financeiro",
   "short_name": "Viana",
-  "description": "Gestão financeira pessoal inteligente e simplificada.",
+  "description": "Sistema de controle de acesso Viana",
   "start_url": "index.html",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#1a73e8",
-  "orientation": "portrait",
+  "theme_color": "#6a11cb",
   "icons": [
     {
       "src": "./img/logo oficial.png",
@@ -18,8 +16,7 @@
     {
       "src": "./img/logo oficial.png",
       "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "type": "image/png"
     }
   ]
 }
