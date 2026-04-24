@@ -3,56 +3,67 @@
 <head>
   <meta charset="UTF-8" />
   <title>Viana Controle</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
   
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#1a73e8">
+  
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Viana">
   <link rel="apple-touch-icon" href="./img/logo oficial.png">
-  <link rel="icon" href="./img/logo oficial .png" type="image/x-icon">
-
+  
+  <link rel="icon" href="./img/logo oficial.png" type="image/png">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
   
   <style>
-    * { box-sizing: border-box; }
-    body { font-family: 'Inter', sans-serif; margin: 10px; background: #f4f7f9; color: #333; }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body { font-family: 'Inter', sans-serif; margin: 0; background: #f4f7f9; color: #333; padding: 10px; padding-bottom: 30px; }
+    
     .app { max-width: 500px; margin: 0 auto; padding: 15px; background: white; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
     h1 { text-align: center; font-size: 20px; color: #1a73e8; margin-bottom: 15px; }
+    
     form { background: #f8f9fa; padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid #eee; }
     .form-group { margin-bottom: 10px; }
     label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 4px; }
-    input { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; }
-    .btn-submit { background: #1a73e8; color: white; border: none; padding: 10px; border-radius: 6px; width: 100%; cursor: pointer; font-weight: 600; margin-top: 5px; transition: 0.2s; }
-    .btn-submit:active { transform: scale(0.98); }
     
-    /* Status das Despesas */
-    .expense-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid #eee; background: white; border-left: 4px solid transparent; }
-    .expense-item.pago { border-left-color: #34a853; background: #e6f4ea; opacity: 0.8; }
-    .expense-item.atrasado { border-left-color: #ea4335; background: #fdecea; }
+    /* Input com 16px para evitar zoom automático no iOS */
+    input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; outline: none; }
+    input:focus { border-color: #1a73e8; }
+    
+    .btn-submit { background: #1a73e8; color: white; border: none; padding: 12px; border-radius: 8px; width: 100%; cursor: pointer; font-weight: 600; margin-top: 5px; transition: 0.2s; font-size: 14px; }
+    .btn-submit:active { transform: scale(0.96); opacity: 0.9; }
+    
+    /* Lista de Gastos */
+    .expense-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid #eee; background: white; border-left: 4px solid #ddd; margin-bottom: 4px; border-radius: 4px; }
+    .expense-item.pago { border-left-color: #34a853; background: #f0fdf4; }
+    .expense-item.atrasado { border-left-color: #ea4335; background: #fff5f5; }
 
-    .expense-info span { display: block; font-size: 14px; font-weight: 500; }
+    .expense-info span { display: block; font-size: 14px; font-weight: 600; color: #444; }
     .expense-info small { color: #777; font-size: 11px; }
-    .expense-actions { display: flex; gap: 8px; }
-    .expense-actions button { border: none; background: #f0f2f5; padding: 6px; border-radius: 5px; cursor: pointer; font-size: 12px; }
+    .expense-actions { display: flex; gap: 10px; }
+    .expense-actions button { border: none; background: #f1f3f4; padding: 8px; border-radius: 6px; cursor: pointer; font-size: 16px; }
     
     .resumo { display: flex; gap: 10px; margin-bottom: 15px; }
-    .resumo-card { flex: 1; padding: 10px; border-radius: 8px; text-align: center; font-size: 12px; }
+    .resumo-card { flex: 1; padding: 12px; border-radius: 10px; text-align: center; font-size: 11px; font-weight: 500; }
+    .resumo-card b { font-size: 14px; display: block; margin-top: 4px; }
     .resumo-card.p { background: #fff3cd; color: #856404; }
     .resumo-card.ok { background: #d4edda; color: #155724; }
     
     /* Calendário */
-    .mini-calendar { border: 1px solid #eee; border-radius: 10px; overflow: hidden; margin-bottom: 15px; background: #fff; }
-    .cal-header { display: flex; justify-content: space-between; align-items: center; background: #1a73e8; color: white; padding: 8px; font-size: 13px; }
-    .cal-header button { background: none; border: none; color: white; cursor: pointer; padding: 0 10px; font-size: 16px; }
+    .mini-calendar { border: 1px solid #eee; border-radius: 12px; overflow: hidden; margin-bottom: 15px; background: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+    .cal-header { display: flex; justify-content: space-between; align-items: center; background: #1a73e8; color: white; padding: 10px; font-size: 13px; font-weight: 600; }
+    .cal-header button { background: rgba(255,255,255,0.2); border: none; color: white; cursor: pointer; padding: 4px 12px; border-radius: 4px; font-size: 14px; }
     .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-size: 11px; }
-    .cal-day-name { background: #f1f3f4; padding: 5px 0; font-weight: 600; }
-    .cal-num { padding: 8px 0; border-bottom: 1px solid #f9f9f9; position: relative; }
-    .has-event::after { content: ''; position: absolute; bottom: 3px; left: 50%; transform: translateX(-50%); width: 4px; height: 4px; background: #1a73e8; border-radius: 50%; }
-    .cal-today { background: #e8f0fe; color: #1a73e8; font-weight: bold; border-radius: 4px; }
+    .cal-day-name { background: #f8f9fa; padding: 8px 0; color: #777; font-weight: bold; border-bottom: 1px solid #eee; }
+    .cal-num { padding: 10px 0; border-bottom: 1px solid #f9f9f9; position: relative; }
+    .has-event::after { content: ''; position: absolute; bottom: 4px; left: 50%; transform: translateX(-50%); width: 4px; height: 4px; background: #1a73e8; border-radius: 50%; }
+    .cal-today { background: #e8f0fe; color: #1a73e8; font-weight: bold; border-radius: 6px; }
     
-    .filter-btn { font-size: 11px; background: #f0f2f5; border: 1px solid #ddd; padding: 5px 12px; border-radius: 20px; cursor: pointer; }
+    .filter-btn { font-size: 11px; background: #fff; border: 1px solid #ddd; padding: 6px 14px; border-radius: 20px; cursor: pointer; font-weight: 600; transition: 0.3s; }
     .filter-btn.active { background: #ea4335; color: white; border-color: #ea4335; }
+
+    #btn-logout { width: 100%; margin-top: 20px; border: none; background: #fff; padding: 10px; border-radius: 8px; color: #ea4335; cursor: pointer; font-size: 12px; font-weight: 600; border: 1px solid #fdecea; }
   </style>
 </head>
 <body>
@@ -61,12 +72,12 @@
   <h1>💰 Viana Controle</h1>
 
   <form id="form-despesa">
-    <div class="form-group"><label>Descrição</label><input type="text" id="desc" required placeholder="Ex: Aluguel" /></div>
+    <div class="form-group"><label>Descrição</label><input type="text" id="desc" required placeholder="Ex: Internet" /></div>
     <div style="display:flex; gap:10px">
-      <div class="form-group" style="flex:1"><label>Valor R$</label><input type="number" id="valor" step="0.01" required /></div>
+      <div class="form-group" style="flex:1"><label>Valor R$</label><input type="number" id="valor" step="0.01" required placeholder="0,00" /></div>
       <div class="form-group" style="flex:1"><label>Parcelas</label><input type="number" id="qtd" value="1" min="1" /></div>
     </div>
-    <div class="form-group"><label>Data da 1ª Parcela</label><input type="date" id="dataBase" required /></div>
+    <div class="form-group"><label>Vencimento (1ª Parcela)</label><input type="date" id="dataBase" required /></div>
     <button type="submit" class="btn-submit" id="btn-save">Salvar Lançamento</button>
   </form>
 
@@ -74,14 +85,14 @@
   <div class="mini-calendar" id="calendar"></div>
 
   <div class="expense-list">
-    <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-      <h3 style="font-size: 14px; margin: 0;">Contas do Mês</h3>
+    <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+      <h3 style="font-size: 14px; margin: 0; color: #555;">Contas do Mês</h3>
       <button id="filter-btn" class="filter-btn">Apenas Pendentes</button>
     </div>
     <div id="items-container"></div>
   </div>
 
-  <button id="btn-logout" style="width:100%; margin-top:20px; border:none; background:none; color:#ea4335; cursor:pointer; font-size:12px; text-decoration: underline;">Sair da conta</button>
+  <button id="btn-logout">Sair da conta</button>
 </div>
 
 <script type="module">
@@ -102,7 +113,7 @@
   const db = getFirestore(app);
   const auth = getAuth(app);
 
-  // REGISTRO DO SERVICE WORKER (Para permitir instalação no celular)
+  // Registro do Service Worker
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('./sw.js').catch(err => console.log("SW Fail:", err));
@@ -167,6 +178,10 @@
     parcelasMes.forEach(p => p.paid ? okTotal += p.value : pTotal += p.value);
     if(filtrarPendentes) parcelasMes = parcelasMes.filter(p => !p.paid);
 
+    if(parcelasMes.length === 0) {
+      container.innerHTML = '<p style="text-align:center; font-size:12px; color:#999; margin-top:20px;">Nenhum lançamento neste mês.</p>';
+    }
+
     parcelasMes.forEach(item => {
       const div = document.createElement('div');
       let statusClass = item.paid ? "pago" : (item.date < hoje ? "atrasado" : "");
@@ -175,23 +190,29 @@
       div.className = `expense-item ${statusClass}`;
       div.innerHTML = `
         <div class="expense-info">
-          <span>${icon} ${item.desc}</span>
+          <span>${item.desc}</span>
           <small>${item.date.split('-').reverse().join('/')} • Parcela ${item.num}/${item.total}</small>
-          <strong>R$ ${formatMoeda(item.value)}</strong>
+          <strong style="font-size:13px; color:#1a73e8">R$ ${formatMoeda(item.value)}</strong>
         </div>
         <div class="expense-actions">
-          ${!item.paid ? `<button style="color:#34a853; font-weight:bold" data-did="${item.dId}" data-pid="${item.id}" class="btn-pay-act">✔</button>` : ''}
-          <button style="color:#ea4335" data-did="${item.dId}" class="btn-del-act">🗑</button>
+          ${!item.paid ? `<button title="Pagar" style="color:#34a853" data-did="${item.dId}" data-pid="${item.id}" class="btn-pay-act">✔</button>` : ''}
+          <button title="Excluir" style="color:#ea4335" data-did="${item.dId}" class="btn-del-act">🗑</button>
         </div>`;
       container.appendChild(div);
     });
 
-    document.querySelectorAll('.btn-pay-act').forEach(b => b.onclick = () => alternarPagamento(b.dataset.did, b.dataset.pid));
-    document.querySelectorAll('.btn-del-act').forEach(b => b.onclick = () => excluirGasto(b.dataset.did));
+    // Eventos de clique delegados
+    container.addEventListener('click', (e) => {
+      const btnPay = e.target.closest('.btn-pay-act');
+      const btnDel = e.target.closest('.btn-del-act');
+      
+      if(btnPay) alternarPagamento(btnPay.dataset.did, btnPay.dataset.pid);
+      if(btnDel) excluirGasto(btnDel.dataset.did);
+    });
 
     document.getElementById('resumo').innerHTML = `
-      <div class="resumo-card p">Pendente<br><b>R$ ${formatMoeda(pTotal)}</b></div>
-      <div class="resumo-card ok">Pago<br><b>R$ ${formatMoeda(okTotal)}</b></div>`;
+      <div class="resumo-card p">Pendente<b>R$ ${formatMoeda(pTotal)}</b></div>
+      <div class="resumo-card ok">Pago<b>R$ ${formatMoeda(okTotal)}</b></div>`;
   }
 
   async function alternarPagamento(dId, pId) {
@@ -201,11 +222,15 @@
   }
 
   async function excluirGasto(id) {
-    if(confirm("Excluir lançamento e todas as parcelas?")) await deleteDoc(doc(db, "despesas", id));
+    if(confirm("Deseja excluir todo este lançamento?")) await deleteDoc(doc(db, "despesas", id));
   }
 
   document.getElementById('form-despesa').onsubmit = async (e) => {
     e.preventDefault();
+    const btnSave = document.getElementById('btn-save');
+    btnSave.disabled = true;
+    btnSave.textContent = "Salvando...";
+
     const desc = document.getElementById('desc').value;
     const valor = parseFloat(document.getElementById('valor').value);
     const qtd = parseInt(document.getElementById('qtd').value);
@@ -214,16 +239,29 @@
     const parcelas = [];
     for(let i=0; i<qtd; i++) {
       const dt = new Date(y, (m - 1) + i, d);
-      if(dt.getDate() !== d) dt.setDate(0);
+      if(dt.getDate() !== d) dt.setDate(0); // Ajuste para meses curtos
       parcelas.push({
         id: Math.random().toString(36).substr(2,9),
         num: i+1, total: qtd, value: valor, paid: false,
         date: dt.toISOString().slice(0,10)
       });
     }
-    await addDoc(collection(db, "despesas"), { desc, parcelas, userId: auth.currentUser.uid, createdAt: new Date() });
-    e.target.reset();
-    document.getElementById('qtd').value = 1;
+    
+    try {
+      await addDoc(collection(db, "despesas"), { 
+        desc, 
+        parcelas, 
+        userId: auth.currentUser.uid, 
+        createdAt: new Date() 
+      });
+      e.target.reset();
+      document.getElementById('qtd').value = 1;
+    } catch (err) {
+      alert("Erro ao salvar lançamento.");
+    } finally {
+      btnSave.disabled = false;
+      btnSave.textContent = "Salvar Lançamento";
+    }
   };
 
   document.getElementById('filter-btn').onclick = function() {
@@ -232,7 +270,9 @@
     renderList();
   };
 
-  document.getElementById('btn-logout').onclick = () => signOut(auth);
+  document.getElementById('btn-logout').onclick = () => {
+    if(confirm("Deseja sair da conta?")) signOut(auth);
+  };
 </script>
 </body>
 </html>
