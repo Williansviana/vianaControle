@@ -1,241 +1,191 @@
 <!DOCTYPE html>
-<html lang="pt-Br">
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <title>Viana Controle PRO</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  
+  <title>Viana Controle</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#1a73e8">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <link rel="apple-touch-icon" href="./img/logo oficial.png">
-  <link rel="icon" href="./img/logo oficial.png">
-
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  
-
+  <link rel="icon" href="./img/logo_oficial .png" type="image/png">
   <style>
     :root {
-      --primary: #1a73e8;
-      --bg: #f4f7f9;
-      --card: #ffffff;
-      --text: #1a1a1a;
-      --border: #eeeeee;
+      --bg: #f8fafc; --card: #ffffff; --text: #0f172a; --muted: #64748b;
+      --border: #e2e8f0; --primary: #3b82f6;
+      --vencida: #ef4444; --paga: #10b981; --shadow: 0 1px 3px rgba(0,0,0,0.1);
     }
-
     @media (prefers-color-scheme: dark) {
-      :root {
-        --bg: #121212;
-        --card: #1e1e1e;
-        --text: #f0f0f0;
-        --border: #333333;
-      }
+      :root { --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --muted: #94a3b8;
+              --border: #334155; --vencida: #f87171; --paga: #34d399; }
     }
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); display: flex; justify-content: center; padding: 20px; }
+    .app { width: 100%; max-width: 420px; }
 
-    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    header { margin-bottom: 20px; text-align: center; }
+    h1 { font-size: 22px; font-weight: 700; color: var(--primary); margin-bottom: 15px; }
     
-    body { 
-      font-family: 'Inter', sans-serif; 
-      margin: 0; padding: 15px; 
-      background: var(--bg); 
-      color: var(--text); 
-      transition: 0.3s;
+    .month-nav {
+      display: flex; align-items: center; justify-content: center; gap: 14px;
+      background: var(--card); padding: 12px; border-radius: 14px; box-shadow: var(--shadow); border: 1px solid var(--border);
     }
+    .month-nav button { width: 40px; height: 40px; border: none; background: var(--bg); border-radius: 8px; cursor: pointer; color: var(--text); font-size: 18px; }
+    #month-label { font-weight: 700; text-transform: capitalize; min-width: 140px; text-align: center; font-size: 15px; }
 
-    .app { 
-      max-width: 500px; margin: 0 auto; 
-      padding: 20px; background: var(--card); 
-      border-radius: 28px; 
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-    }
+    .card { background: var(--card); border-radius: 16px; padding: 16px; margin: 20px 0; border: 1px solid var(--border); box-shadow: var(--shadow); }
+    form { display: grid; gap: 12px; }
+    label { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; }
+    input { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 10px; background: var(--bg); color: var(--text); font-size: 16px; outline: none; }
+    input:focus { border-color: var(--primary); }
+    .row { display: grid; grid-template-columns: 2fr 1fr; gap: 10px; }
+    .btn { width: 100%; padding: 14px; border: none; border-radius: 12px; background: var(--primary); color: white; font-weight: 700; cursor: pointer; font-size: 15px; }
 
-    h1 { text-align: center; font-size: 22px; color: var(--primary); margin-bottom: 20px; }
+    .lista-container { background: var(--card); border-radius: 16px; border: 1px solid var(--border); overflow: hidden; box-shadow: var(--shadow); }
+    .item { display: flex; justify-content: space-between; align-items: center; padding: 16px; border-bottom: 1px solid var(--border); transition: 0.3s; }
+    .item:last-child { border-bottom: none; }
 
-    /* Estilo dos Inputs */
-    form { background: var(--bg); padding: 15px; border-radius: 18px; margin-bottom: 20px; }
-    .form-group { margin-bottom: 12px; }
-    label { display: block; font-size: 11px; font-weight: 700; margin-bottom: 4px; opacity: 0.7; }
-    input { 
-      width: 100%; padding: 12px; border: 1px solid var(--border); 
-      border-radius: 10px; background: var(--card); color: var(--text);
-    }
+    /* Estilos de Status */
+    .item.status-paga { border-left: 6px solid var(--paga); background: rgba(16, 185, 129, 0.04); }
+    .item.status-paga .name { color: var(--paga); text-decoration: line-through; opacity: 0.8; }
 
-    /* Botões */
-    .btn-primary { 
-      background: var(--primary); color: white; border: none; 
-      padding: 14px; border-radius: 12px; width: 100%; 
-      font-weight: 600; cursor: pointer; transition: 0.2s;
-    }
-    .btn-primary:active { transform: scale(0.96); }
+    .item.status-vencida { border-left: 6px solid var(--vencida); background: rgba(239, 68, 68, 0.04); }
+    .item.status-vencida .name { color: var(--vencida); font-weight: 700; }
 
-    .btn-outline {
-      background: none; border: 1px solid var(--border); color: var(--text);
-      padding: 10px; border-radius: 10px; width: 100%; margin-top: 10px; cursor: pointer;
-    }
-
-    /* Lista de Despesas */
-    .expense-item { 
-      display: flex; justify-content: space-between; align-items: center; 
-      padding: 14px; border-bottom: 1px solid var(--border);
-    }
-    .status-badge {
-      padding: 3px 7px; border-radius: 5px; font-size: 10px; font-weight: 700; color: white;
-    }
-    .badge-pago { background: #34a853; }
-    .badge-atrasado { background: #ea4335; }
-
-    #chart-area { max-height: 180px; margin-bottom: 20px; }
-    .resumo { display: flex; gap: 10px; margin-bottom: 15px; }
-    .resumo-card { flex: 1; padding: 15px; border-radius: 15px; text-align: center; font-size: 12px; font-weight: bold; }
-    .resumo-card.p { background: #fff3cd; color: #856404; }
-    .resumo-card.ok { background: #d4edda; color: #155724; }
+    .name { font-weight: 600; font-size: 15px; display: flex; align-items: center; gap: 6px; }
+    .parcela-tag { font-size: 10px; background: var(--border); padding: 2px 6px; border-radius: 4px; color: var(--muted); font-weight: 500; text-decoration: none !important; }
+    .meta { font-size: 12px; color: var(--muted); margin-top: 4px; }
+    .meta strong { color: var(--text); }
+    
+    .btn-action { width: 38px; height: 38px; border: none; border-radius: 10px; background: var(--bg); border: 1px solid var(--border); cursor: pointer; font-size: 16px; }
+    .btn-sair { background: transparent; color: var(--muted); border: 1px solid var(--border); margin-top: 30px; font-weight: 500; }
   </style>
 </head>
 <body>
-
 <div class="app">
-  <h1>💰 Viana Controle</h1>
-
-  <div id="chart-area"><canvas id="myChart"></canvas></div>
-
-  <div class="resumo" id="resumo"></div>
-
-  <form id="form-despesa">
-    <div class="form-group"><label>Descrição</label><input type="text" id="desc" required placeholder="Ex: Aluguel" /></div>
-    <div style="display:flex; gap:10px">
-      <div class="form-group" style="flex:2"><label>Valor R$</label><input type="number" id="valor" step="0.01" required /></div>
-      <div class="form-group" style="flex:1"><label>Parc.</label><input type="number" id="qtd" value="1" min="1" /></div>
+  <header>
+    <h1>Viana Controle</h1>
+    <div class="month-nav">
+      <button id="prev">←</button>
+      <span id="month-label"></span>
+      <button id="next">→</button>
     </div>
-    <div class="form-group"><label>Data Vencimento</label><input type="date" id="dataBase" required /></div>
-    <button type="submit" class="btn-primary">Salvar Lançamento</button>
-  </form>
+  </header>
 
-  <button class="btn-outline" onclick="exportarPDF()">📄 Gerar Relatório PDF</button>
+  <div class="card">
+    <form id="form">
+      <label>O que comprou?</label>
+      <input type="text" id="desc" placeholder="Ex: Mercado" required />
+      <div class="row">
+        <div><label>Valor (R$)</label><input type="number" id="valor" step="0.01" inputmode="decimal" required /></div>
+        <div><label>Parcelas</label><input type="number" id="qtd" value="1" min="1" /></div>
+      </div>
+      <label>Data de Vencimento</label>
+      <input type="date" id="data" required />
+      <button class="btn">Adicionar Conta</button>
+    </form>
+  </div>
 
-  <div id="items-container"></div>
-
-  <button id="btn-logout" class="btn-outline" style="border:none; color:#ea4335; margin-top:20px;">Sair da Conta</button>
+  <div id="lista" class="lista-container"></div>
+  <button id="sair" class="btn btn-sair">Sair do Sistema</button>
 </div>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc, updateDoc, query, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc, updateDoc, query, where, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
   import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyAjgQTdQmo63-0mR8k1bVYsY0E8I7Iqbnk",
-    authDomain: "will-gasto.firebaseapp.com",
-    projectId: "will-gasto",
-    storageBucket: "will-gasto.firebasestorage.app",
-    messagingSenderId: "436819384776",
-    appId: "1:436819384776:web:37c4c1173c543c0d1dc8fd"
+  const config = {
+    apiKey: "AIzaSyAjgQTdQmo63-0mR8k1bVYsY0E8I7Iqbnk", authDomain: "will-gasto.firebaseapp.com",
+    projectId: "will-gasto", storageBucket: "will-gasto.firebasestorage.app",
+    messagingSenderId: "436819384776", appId: "1:436819384776:web:37c4c1173c543c0d1dc8fd"
   };
 
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-  const auth = getAuth(app);
+  const app = initializeApp(config), db = getFirestore(app), auth = getAuth(app);
+  let uid = null, allData = [], selectedMonth = new Date().toISOString().slice(0, 7);
 
-  // Registro do Service Worker
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js'));
+  const formatarMoeda = (valor) => valor.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+  onAuthStateChanged(auth, user => user ? (uid = user.uid, loadData()) : window.location.href = "login.html");
+
+  function loadData() {
+    onSnapshot(query(collection(db, "despesas"), where("userId", "==", uid)), snap => {
+      allData = [];
+      snap.forEach(d => {
+        const data = d.data();
+        if (data.parcelas) {
+          data.parcelas.forEach((p, index) => {
+            allData.push({ ...p, desc: data.desc, docId: d.id, nParc: index + 1, totalParc: data.parcelas.length });
+          });
+        }
+      });
+      render();
+    });
   }
 
-  let despesas = [];
-  let chartInstance = null;
+  function render() {
+    const box = document.getElementById('lista');
+    const monthData = allData.filter(i => i.date.startsWith(selectedMonth)).sort((a,b) => a.date.localeCompare(b.date));
+    document.getElementById('month-label').textContent = new Date(selectedMonth + '-02').toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
 
-  onAuthStateChanged(auth, (user) => {
-    if (!user) { window.location.href = "login.html"; return; }
-    const q = query(collection(db, "despesas"), where("userId", "==", user.uid));
-    onSnapshot(q, (snap) => {
-      despesas = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-      renderAll();
-    });
-  });
-
-  function renderAll() {
-    const container = document.getElementById('items-container');
     const hoje = new Date().toISOString().slice(0, 10);
-    container.innerHTML = '';
-    let pTotal = 0, okTotal = 0;
+    box.innerHTML = '';
 
-    const parcelas = despesas.flatMap(d => d.parcelas.map(p => ({...p, desc: d.desc, dId: d.id})))
-                             .sort((a,b) => a.date.localeCompare(b.date));
+    if(monthData.length === 0) {
+        box.innerHTML = '<div style="padding:40px; text-align:center; color:var(--muted); font-size:14px;">Nenhuma conta este mês.</div>';
+        return;
+    }
 
-    parcelas.forEach(item => {
-      item.paid ? okTotal += item.value : pTotal += item.value;
+    monthData.forEach(item => {
+      const dia = item.date.split('-')[2];
+      const estaVencida = item.date < hoje && !item.paid;
+      const statusClass = item.paid ? 'status-paga' : (estaVencida ? 'status-vencida' : '');
+      const tagParc = item.totalParc > 1 ? `<span class="parcela-tag">${item.nParc}/${item.totalParc}</span>` : '';
+
       const div = document.createElement('div');
-      div.className = 'expense-item';
-      const status = item.paid ? '<span class="status-badge badge-pago">PAGO</span>' : (item.date < hoje ? '<span class="status-badge badge-atrasado">ATRASADO</span>' : '');
-      
+      div.className = `item ${statusClass}`;
       div.innerHTML = `
         <div>
-          <span><strong>${item.desc}</strong> ${status}</span><br>
-          <small>${item.date.split('-').reverse().join('/')} | R$ ${item.value.toFixed(2)}</small>
+          <div class="name">${item.desc} ${tagParc} ${estaVencida ? '⚠️' : ''}</div>
+          <div class="meta">Dia ${dia} • <strong>R$ ${formatarMoeda(item.value)}</strong></div>
         </div>
-        <div>
-          ${!item.paid ? `<button onclick="pagar('${item.dId}','${item.id}')" style="border:none; background:none; cursor:pointer;">✅</button>` : ''}
-          <button onclick="excluir('${item.dId}')" style="border:none; background:none; cursor:pointer;">🗑️</button>
+        <div style="display:flex; gap:10px">
+          ${!item.paid ? `<button class="btn-action" onclick="marcar('${item.docId}','${item.id}')">✅</button>` : ''}
+          <button class="btn-action" onclick="excluir('${item.docId}')">🗑️</button>
         </div>`;
-      container.appendChild(div);
-    });
-
-    document.getElementById('resumo').innerHTML = `
-      <div class="resumo-card p">Pendente<br>R$ ${pTotal.toFixed(2)}</div>
-      <div class="resumo-card ok">Pago<br>R$ ${okTotal.toFixed(2)}</div>`;
-    
-    atualizarGrafico(okTotal, pTotal);
-  }
-
-  function atualizarGrafico(pagos, pendentes) {
-    const ctx = document.getElementById('myChart').getContext('2d');
-    if (chartInstance) chartInstance.destroy();
-    chartInstance = new Chart(ctx, {
-      type: 'doughnut',
-      data: {
-        datasets: [{ data: [pagos, pendentes], backgroundColor: ['#34a853', '#ea4335'], borderWidth: 0 }]
-      },
-      options: { cutout: '80%' }
+      box.appendChild(div);
     });
   }
 
-  window.pagar = async (dId, pId) => {
-    const d = despesas.find(x => x.id === dId);
-    const novas = d.parcelas.map(p => p.id === pId ? {...p, paid: true} : p);
-    await updateDoc(doc(db, "despesas", dId), { parcelas: novas });
+  window.marcar = async (docId, pId) => {
+    const ref = doc(db, "despesas", docId), snap = await getDoc(ref);
+    if (snap.exists()) await updateDoc(ref, { parcelas: snap.data().parcelas.map(p => p.id === pId ? { ...p, paid: true } : p) });
   };
 
-  window.excluir = async (id) => {
-    if(confirm("Excluir?")) await deleteDoc(doc(db, "despesas", id));
-  };
+  window.excluir = async (id) => { if(confirm('Apagar esta conta?')) await deleteDoc(doc(db, "despesas", id)); };
 
-  document.getElementById('form-despesa').onsubmit = async (e) => {
+  document.getElementById('form').onsubmit = async e => {
     e.preventDefault();
     const desc = document.getElementById('desc').value;
     const valor = parseFloat(document.getElementById('valor').value);
-    const qtd = parseInt(document.getElementById('qtd').value);
-    const [y, m, d] = document.getElementById('dataBase').value.split('-').map(Number);
+    const qtd = parseInt(document.getElementById('qtd').value) || 1;
+    const [y, m, d] = document.getElementById('data').value.split('-').map(Number);
     const parcelas = [];
     for(let i=0; i<qtd; i++) {
-      const dt = new Date(y, (m - 1) + i, d);
-      parcelas.push({ id: Math.random().toString(36).substr(2,9), num: i+1, total: qtd, value: valor, paid: false, date: dt.toISOString().slice(0,10) });
+      const dt = new Date(y, m-1+i, d);
+      parcelas.push({ id: Math.random().toString(36).slice(2,9), value: valor, date: dt.toISOString().slice(0,10), paid: false });
     }
-    await addDoc(collection(db, "despesas"), { desc, parcelas, userId: auth.currentUser.uid });
+    await addDoc(collection(db, "despesas"), { desc, parcelas, userId: uid });
     e.target.reset();
   };
 
-  window.exportarPDF = () => {
-    const { jsPDF } = window.jspdf;
-    const docPdf = new jsPDF();
-    docPdf.text("Relatório Viana Controle", 20, 20);
-    let y = 30;
-    despesas.forEach(d => { docPdf.text(`${d.desc} - R$ ${d.parcelas[0].value}`, 20, y); y+=10; });
-    docPdf.save("Relatorio.pdf");
-  };
-
-  document.getElementById('btn-logout').onclick = () => signOut(auth);
+  document.getElementById('prev').onclick = () => changeMonth(-1);
+  document.getElementById('next').onclick = () => changeMonth(1);
+  function changeMonth(dir) {
+    const [y, m] = selectedMonth.split('-').map(Number);
+    const d = new Date(y, m-1+dir, 1);
+    selectedMonth = d.toISOString().slice(0, 7);
+    render();
+  }
+  document.getElementById('sair').onclick = () => signOut(auth);
 </script>
 </body>
 </html>
