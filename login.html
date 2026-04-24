@@ -2,81 +2,119 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <link rel="icon" href="./img/logo oficial .png" type="image/x-icon">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#6a11cb">
+  <link rel="icon" href="img/logo_oficial.png" type="image/png">
+  <link rel="apple-touch-icon" href="img/logo_oficial.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <link rel="apple-touch-icon" href="./img/logo oficial.png">
-  
+  <meta name="apple-mobile-web-app-title" content="Viana Controle">
+
   <title>Viana Controle - Acesso</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   
   <style>
-    * { box-sizing: border-box; }
+    :root { --primary: #6a11cb; --accent: #1a73e8; --bg-gradient: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%); }
+    
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    
     body {
       font-family: 'Inter', sans-serif;
-      background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
-      margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px;
+      background: var(--bg-gradient);
+      margin: 0; min-height: 100vh;
+      display: flex; align-items: center; justify-content: center; padding: 20px;
     }
+
     .login-container {
-      width: 100%; max-width: 420px; padding: 30px; background: white; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); text-align: center;
+      width: 100%; max-width: 400px; padding: 30px; 
+      background: white; border-radius: 24px; 
+      box-shadow: 0 20px 40px rgba(0,0,0,0.2); text-align: center;
     }
-    h1 { font-size: 22px; color: #333; margin-bottom: 20px; }
-    .tabs-nav { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #eee; }
-    .tab-btn { flex: 1; padding: 10px; border: none; background: none; cursor: pointer; font-weight: 600; color: #666; transition: 0.3s; }
-    .tab-btn.active { color: #1a73e8; border-bottom: 2px solid #1a73e8; }
-    .content-section { display: none; text-align: left; }
+
+    .brand-logo { width: 80px; height: 80px; object-fit: contain; margin-bottom: 10px; border-radius: 15px; }
+    h1 { font-size: 24px; font-weight: 700; color: #333; margin: 0 0 20px; }
+
+    .tabs-nav { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #f0f0f0; }
+    .tab-btn { flex: 1; padding: 12px; border: none; background: none; cursor: pointer; font-weight: 600; color: #999; transition: 0.3s; }
+    .tab-btn.active { color: var(--accent); border-bottom: 2px solid var(--accent); }
+
+    .content-section { display: none; text-align: left; animation: fadeIn 0.3s ease; }
     .content-section.active { display: block; }
-    input { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; }
-    .btn { width: 100%; padding: 14px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.3s; font-size: 14px; }
-    .btn-login { background: #1a73e8; color: white; }
-    .btn-pix { background: #6f42c1; color: white; margin-bottom: 15px; }
-    .btn-whatsapp { background: #25D366; color: white; display: none; margin-top: 10px; }
-    #qrcode { text-align: center; margin: 15px 0; display: none; }
-    #qrcode img { margin: 0 auto; }
-    .pix-box { background: #f1f5f9; padding: 10px; border-radius: 6px; font-size: 11px; word-break: break-all; font-family: monospace; border: 1px dashed #cbd5e1; cursor: pointer; }
-    .msg { font-size: 13px; margin-top: 15px; display: none; padding: 12px; border-radius: 6px; }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    label { font-size: 12px; font-weight: 600; color: #666; margin-bottom: 5px; display: block; }
+    input { 
+      width: 100%; padding: 14px; margin-bottom: 15px; border: 1px solid #ddd; 
+      border-radius: 12px; font-size: 14px; outline: none; transition: 0.2s;
+    }
+    input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.1); }
+
+    .btn { 
+      width: 100%; padding: 14px; border: none; border-radius: 12px; 
+      font-weight: 600; cursor: pointer; display: flex; align-items: center; 
+      justify-content: center; gap: 8px; transition: 0.2s; font-size: 14px;
+    }
+    .btn:active { transform: scale(0.98); }
+    .btn-login { background: var(--accent); color: white; }
+    .btn-pix { background: #6f42c1; color: white; }
+    .btn-whatsapp { background: #25D366; color: white; display: none; margin-top: 15px; }
+
+    #qrcode { text-align: center; margin: 20px 0; display: none; }
+    #qrcode img { margin: 0 auto; border: 6px solid #fff; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    
+    .pix-box { 
+      background: #f8fafc; padding: 12px; border-radius: 8px; font-size: 11px; 
+      word-break: break-all; border: 1px dashed #cbd5e1; cursor: pointer; color: #475569;
+    }
+
+    .msg { font-size: 13px; margin-top: 15px; display: none; padding: 12px; border-radius: 10px; font-weight: 500; text-align: center; }
     .err { background: #fdecea; color: #ea4335; border: 1px solid #fad2cf; }
   </style>
 </head>
 <body>
 
 <div class="login-container">
-  <h1>💰 Viana Controle</h1>
-  <p>Bem-vindo ao sistema!</p>
+  <img src="img/logo_oficial .png" alt="Logo Viana" class="brand-logo">
+  <h1>Viana Controle</h1>
 
   <div class="tabs-nav">
-    <button class="tab-btn active" onclick="switchTab('login')">Entrar</button>
-    <button class="tab-btn" onclick="switchTab('pagamento')">Pagar Pix</button>
+    <button class="tab-btn active" id="btn-tab-login" onclick="switchTab('login')">Entrar</button>
+    <button class="tab-btn" id="btn-tab-pagamento" onclick="switchTab('pagamento')">Pagamento</button>
   </div>
 
   <div id="section-login" class="content-section active">
-    <input type="email" id="email" placeholder="E-mail">
-    <input type="password" id="senha" placeholder="Senha">
+    <label>E-mail</label>
+    <input type="email" id="email" placeholder="seu@email.com">
+    <label>Senha</label>
+    <input type="password" id="senha" placeholder="••••••••">
     <button class="btn btn-login" id="btnLogin">Acessar Sistema</button>
   </div>
 
   <div id="section-pagamento" class="content-section">
-    <p style="font-size: 13px; color: #666;">Gere o código abaixo e envie o comprovante para liberar seu acesso.</p>
-    <button class="btn btn-pix" onclick="gerarPix()">Gerar QR Code (R$ 5,00)</button>
+    <p style="font-size: 13px; text-align: center; color: #666;">Acesse todas as funções do sistema por apenas <b>R$ 5,00</b> (Taxa única).</p>
+    <button class="btn btn-pix" onclick="gerarPix()">Gerar QR Code Pix</button>
+    
     <div id="qrcode"></div>
-    <div id="pix-area" style="display:none;">
+    
+    <div id="pix-area" style="display:none; margin-top: 10px;">
         <div class="pix-box" id="pix-text" onclick="copiarPix()"></div>
-        <p style="font-size: 10px; color: #888; margin-top: 5px;">Clique no código acima para copiar</p>
+        <p style="font-size: 10px; color: #888; text-align: center; margin-top: 5px;">Toque no código para copiar</p>
     </div>
-    <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
-    <label style="font-size: 12px; font-weight: 600;">Seu nome completo:</label>
-    <input type="text" id="nome-usuario" placeholder="Ex: João Silva" onkeyup="validarZap()">
+
+    <input type="text" id="nome-usuario" placeholder="Seu Nome Completo" style="margin-top:20px;" onkeyup="validarZap()">
     <button id="btn-whatsapp" class="btn btn-whatsapp" onclick="enviarZap()">📲 Enviar Comprovante</button>
   </div>
+
   <div id="feedback" class="msg err"></div>
 </div>
 
 <script type="module">
+  // --- CONFIGURAÇÃO E IMPORTS FIREBASE ---
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import { getAuth, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
   import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
@@ -94,47 +132,14 @@
   const auth = getAuth(app);
   const db = getFirestore(app);
 
-  // Registro do Service Worker para PWA
+  // Registro do Service Worker para reconhecimento de PWA
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js').catch(err => console.log("SW erro:", err));
+      navigator.serviceWorker.register('./sw.js').catch(err => console.log("Erro SW:", err));
     });
   }
 
-  const PIX_STRING = "00020126360014BR.GOV.BCB.PIX0114+551999679685152040000530398654045.005802BR5901N6001C62070503***63049D51";
-
-  window.switchTab = (tab) => {
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
-    document.getElementById(`section-${tab}`).classList.add('active');
-    event.currentTarget.classList.add('active');
-  };
-
-  window.gerarPix = () => {
-    const qrDiv = document.getElementById('qrcode');
-    qrDiv.innerHTML = "";
-    qrDiv.style.display = "block";
-    new QRCode(qrDiv, { text: PIX_STRING, width: 160, height: 160 });
-    document.getElementById('pix-text').textContent = PIX_STRING;
-    document.getElementById('pix-area').style.display = "block";
-  };
-
-  window.copiarPix = () => {
-    navigator.clipboard.writeText(PIX_STRING);
-    alert("Código Pix copiado!");
-  };
-
-  window.validarZap = () => {
-    const nome = document.getElementById('nome-usuario').value;
-    document.getElementById('btn-whatsapp').style.display = nome.length >= 3 ? 'flex' : 'none';
-  };
-
-  window.enviarZap = () => {
-    const nome = document.getElementById('nome-usuario').value;
-    const msg = encodeURIComponent(`Olá! Sou ${nome}. Fiz o pagamento de R$ 5,00. Segue o comprovante para liberar meu acesso.`);
-    window.open(`https://wa.me/5519996796851?text=${msg}`, '_blank');
-  };
-
+  // --- LÓGICA DE LOGIN ---
   document.getElementById('btnLogin').onclick = async () => {
     const email = document.getElementById('email').value;
     const senha = document.getElementById('senha').value;
@@ -142,13 +147,14 @@
     const btn = document.getElementById('btnLogin');
 
     if(!email || !senha) {
-        fb.textContent = "Preencha os campos.";
+        fb.textContent = "⚠️ Preencha os campos de acesso.";
         fb.style.display = "block";
         return;
     }
 
     btn.disabled = true;
-    btn.textContent = "Verificando...";
+    btn.textContent = "Validando...";
+    fb.style.display = "none";
 
     try {
       const userRes = await signInWithEmailAndPassword(auth, email, senha);
@@ -157,18 +163,54 @@
       if (userDoc.exists() && userDoc.data().aprovado === true) {
         window.location.href = "index.html";
       } else {
-        fb.textContent = "⚠️ Acesso pendente. Faça o pagamento.";
+        fb.textContent = "⏳ Acesso pendente. Realize o pagamento abaixo.";
         fb.style.display = "block";
         switchTab('pagamento');
         await signOut(auth);
       }
     } catch (e) {
-      fb.textContent = "Dados incorretos.";
+      fb.textContent = "❌ E-mail ou senha incorretos.";
       fb.style.display = "block";
     } finally {
       btn.disabled = false;
       btn.textContent = "Acessar Sistema";
     }
+  };
+
+  // --- FUNÇÕES DE INTERFACE ---
+  const PIX_STRING = "00020126360014BR.GOV.BCB.PIX0114+551999679685152040000530398654045.005802BR5901N6001C62070503***63049D51";
+
+  window.switchTab = (tab) => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+    
+    document.getElementById(`section-${tab}`).classList.add('active');
+    document.getElementById(`btn-tab-${tab}`).classList.add('active');
+  };
+
+  window.gerarPix = () => {
+    const qrContainer = document.getElementById('qrcode');
+    qrContainer.style.display = "block";
+    qrContainer.innerHTML = "";
+    new QRCode(qrContainer, { text: PIX_STRING, width: 160, height: 160 });
+    document.getElementById('pix-text').textContent = PIX_STRING;
+    document.getElementById('pix-area').style.display = "block";
+  };
+
+  window.copiarPix = () => {
+    navigator.clipboard.writeText(PIX_STRING);
+    alert("Copiado! Use o 'Pix Copia e Cola' no seu banco.");
+  };
+
+  window.validarZap = () => {
+    const nome = document.getElementById('nome-usuario').value;
+    document.getElementById('btn-whatsapp').style.display = nome.trim().length >= 3 ? 'flex' : 'none';
+  };
+
+  window.enviarZap = () => {
+    const nome = document.getElementById('nome-usuario').value;
+    const msg = encodeURIComponent(`Olá! Fiz o pagamento (R$ 5,00) para liberar meu acesso no Viana Controle. Nome: ${nome}`);
+    window.open(`https://wa.me/5519996796851?text=${msg}`, '_blank');
   };
 </script>
 </body>
