@@ -2,21 +2,24 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <link rel="icon" href="./img/logo oficial .png" type="image/x-icon">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>Viana Controle - Acesso</title>
+
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#6a11cb">
+  
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Viana">
   <link rel="apple-touch-icon" href="./img/logo oficial.png">
+
+  <link rel="icon" href="./img/logo oficial .png" type="image/png">
   
-  <title>Viana Controle - Acesso</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   
   <style>
-    * { box-sizing: border-box; }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     body {
       font-family: 'Inter', sans-serif;
       background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
@@ -31,14 +34,14 @@
     .tab-btn.active { color: #1a73e8; border-bottom: 2px solid #1a73e8; }
     .content-section { display: none; text-align: left; }
     .content-section.active { display: block; }
-    input { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; }
+    input { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; } /* 16px evita zoom no iOS */
     .btn { width: 100%; padding: 14px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.3s; font-size: 14px; }
     .btn-login { background: #1a73e8; color: white; }
     .btn-pix { background: #6f42c1; color: white; margin-bottom: 15px; }
     .btn-whatsapp { background: #25D366; color: white; display: none; margin-top: 10px; }
     #qrcode { text-align: center; margin: 15px 0; display: none; }
-    #qrcode img { margin: 0 auto; }
-    .pix-box { background: #f1f5f9; padding: 10px; border-radius: 6px; font-size: 11px; word-break: break-all; font-family: monospace; border: 1px dashed #cbd5e1; cursor: pointer; }
+    #qrcode img { margin: 0 auto; border: 10px solid white; border-radius: 8px; }
+    .pix-box { background: #f1f5f9; padding: 10px; border-radius: 6px; font-size: 11px; word-break: break-all; font-family: monospace; border: 1px dashed #cbd5e1; cursor: pointer; margin-top: 10px; }
     .msg { font-size: 13px; margin-top: 15px; display: none; padding: 12px; border-radius: 6px; }
     .err { background: #fdecea; color: #ea4335; border: 1px solid #fad2cf; }
   </style>
@@ -63,16 +66,20 @@
   <div id="section-pagamento" class="content-section">
     <p style="font-size: 13px; color: #666;">Gere o código abaixo e envie o comprovante para liberar seu acesso.</p>
     <button class="btn btn-pix" onclick="gerarPix()">Gerar QR Code (R$ 5,00)</button>
+    
     <div id="qrcode"></div>
+    
     <div id="pix-area" style="display:none;">
         <div class="pix-box" id="pix-text" onclick="copiarPix()"></div>
         <p style="font-size: 10px; color: #888; margin-top: 5px;">Clique no código acima para copiar</p>
     </div>
+    
     <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
     <label style="font-size: 12px; font-weight: 600;">Seu nome completo:</label>
     <input type="text" id="nome-usuario" placeholder="Ex: João Silva" onkeyup="validarZap()">
     <button id="btn-whatsapp" class="btn btn-whatsapp" onclick="enviarZap()">📲 Enviar Comprovante</button>
   </div>
+
   <div id="feedback" class="msg err"></div>
 </div>
 
@@ -94,10 +101,12 @@
   const auth = getAuth(app);
   const db = getFirestore(app);
 
-  // Registro do Service Worker para PWA
+  // Registro do Service Worker (Essencial para PWA)
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js').catch(err => console.log("SW erro:", err));
+      navigator.serviceWorker.register('./sw.js')
+      .then(reg => console.log("SW registrado!", reg.scope))
+      .catch(err => console.log("SW erro:", err));
     });
   }
 
@@ -107,7 +116,11 @@
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
     document.getElementById(`section-${tab}`).classList.add('active');
-    event.currentTarget.classList.add('active');
+    
+    // Ajuste para garantir que o botão clicado fique ativo
+    const btns = document.querySelectorAll('.tab-btn');
+    if(tab === 'login') btns[0].classList.add('active');
+    else btns[1].classList.add('active');
   };
 
   window.gerarPix = () => {
@@ -126,12 +139,12 @@
 
   window.validarZap = () => {
     const nome = document.getElementById('nome-usuario').value;
-    document.getElementById('btn-whatsapp').style.display = nome.length >= 3 ? 'flex' : 'none';
+    document.getElementById('btn-whatsapp').style.display = nome.trim().length >= 3 ? 'flex' : 'none';
   };
 
   window.enviarZap = () => {
     const nome = document.getElementById('nome-usuario').value;
-    const msg = encodeURIComponent(`Olá! Sou ${nome}. Fiz o pagamento de R$ 5,00. Segue o comprovante para liberar meu acesso.`);
+    const msg = encodeURIComponent(`Olá! Sou ${nome}. Fiz o pagamento de R$ 5,00 para o Viana Controle. Segue o comprovante.`);
     window.open(`https://wa.me/5519996796851?text=${msg}`, '_blank');
   };
 
@@ -157,13 +170,13 @@
       if (userDoc.exists() && userDoc.data().aprovado === true) {
         window.location.href = "index.html";
       } else {
-        fb.textContent = "⚠️ Acesso pendente. Faça o pagamento.";
+        fb.textContent = "⚠️ Acesso pendente. Faça o pagamento e envie o comprovante.";
         fb.style.display = "block";
         switchTab('pagamento');
         await signOut(auth);
       }
     } catch (e) {
-      fb.textContent = "Dados incorretos.";
+      fb.textContent = "Dados de acesso incorretos.";
       fb.style.display = "block";
     } finally {
       btn.disabled = false;
