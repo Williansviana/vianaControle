@@ -21,9 +21,8 @@
     :root {
       --primary: #6a11cb;
       --secondary: #2575fc;
-      --accent: #00d2ff;
       --text-dark: #1e293b;
-      --glass: rgba(255, 255, 255, 0.9);
+      --glass: rgba(255, 255, 255, 0.95);
     }
 
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
@@ -33,147 +32,124 @@
       background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
       margin: 0; min-height: 100vh;
       display: flex; align-items: center; justify-content: center; padding: 20px;
-      overflow: hidden;
     }
-
-    /* Elementos decorativos de fundo */
-    body::before, body::after {
-      content: ""; position: absolute; width: 300px; height: 300px; border-radius: 50%;
-      background: linear-gradient(var(--accent), var(--secondary));
-      z-index: -1; opacity: 0.4; filter: blur(80px);
-    }
-    body::before { top: -10%; left: -10%; }
-    body::after { bottom: -10%; right: -10%; }
 
     .login-container {
       width: 100%; max-width: 420px; padding: 40px 30px;
       background: var(--glass);
-      backdrop-filter: blur(10px);
-      border-radius: 28px;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-      border: 1px solid rgba(255, 255, 255, 0.3);
+      backdrop-filter: blur(15px);
+      border-radius: 30px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.4);
       text-align: center;
     }
 
     .brand-logo { 
-      width: 90px; height: 90px; object-fit: contain; 
+      width: 85px; height: 85px; object-fit: contain; 
       margin-bottom: 15px; border-radius: 20px;
-      filter: drop-shadow(0 10px 15px rgba(0,0,0,0.1));
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
     }
 
-    h1 { font-size: 28px; font-weight: 700; color: var(--text-dark); margin: 0; letter-spacing: -0.5px; }
+    h1 { font-size: 26px; font-weight: 700; color: var(--text-dark); margin: 0; }
     .subtitle { color: #64748b; font-size: 14px; margin-bottom: 30px; }
 
     .tabs-nav { 
-      display: flex; background: #f1f5f9; padding: 5px; border-radius: 14px; margin-bottom: 30px;
+      display: flex; background: #f1f5f9; padding: 5px; border-radius: 16px; margin-bottom: 25px;
     }
     .tab-btn { 
       flex: 1; padding: 12px; border: none; background: none; cursor: pointer; 
-      font-weight: 600; color: #64748b; border-radius: 10px; transition: 0.3s;
+      font-weight: 700; color: #64748b; border-radius: 12px; transition: 0.3s;
     }
     .tab-btn.active { background: white; color: var(--primary); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
 
     .content-section { display: none; text-align: left; animation: slideUp 0.4s ease-out; }
     .content-section.active { display: block; }
 
-    @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
-    .input-group { margin-bottom: 20px; }
-    label { font-size: 13px; font-weight: 700; color: #475569; margin-bottom: 8px; display: block; padding-left: 5px; }
+    .input-group { margin-bottom: 18px; }
+    label { font-size: 13px; font-weight: 700; color: #475569; margin-bottom: 6px; display: block; padding-left: 4px; }
     
     input { 
-      width: 100%; padding: 15px 18px; border: 2px solid #e2e8f0; 
-      border-radius: 15px; font-size: 15px; transition: 0.3s; background: #f8fafc;
-      color: var(--text-dark);
+      width: 100%; padding: 15px; border: 2px solid #e2e8f0; 
+      border-radius: 14px; font-size: 15px; transition: 0.3s; background: #f8fafc;
     }
     input:focus { border-color: var(--primary); background: white; box-shadow: 0 0 0 4px rgba(106, 17, 203, 0.1); }
 
     .btn { 
-      width: 100%; padding: 16px; border: none; border-radius: 15px; 
+      width: 100%; padding: 16px; border: none; border-radius: 14px; 
       font-weight: 700; cursor: pointer; display: flex; align-items: center; 
-      justify-content: center; gap: 10px; transition: 0.3s; font-size: 16px;
+      justify-content: center; gap: 10px; transition: 0.3s; font-size: 15px;
     }
-    .btn:hover { transform: translateY(-2px); opacity: 0.9; }
-    .btn-login { background: linear-gradient(to right, var(--primary), var(--secondary)); color: white; box-shadow: 0 10px 20px -5px rgba(106, 17, 203, 0.4); }
-    
+    .btn-login { background: linear-gradient(to right, var(--primary), var(--secondary)); color: white; margin-top: 10px; }
     .btn-pix { background: #1e293b; color: white; }
     .btn-whatsapp { background: #22c55e; color: white; display: none; margin-top: 15px; }
 
-    #qrcode { text-align: center; margin: 25px 0; display: none; }
-    #qrcode img { 
-      margin: 0 auto; border: 10px solid white; border-radius: 20px; 
-      box-shadow: 0 15px 30px rgba(0,0,0,0.1); 
-    }
+    #qrcode { text-align: center; margin: 20px 0; display: none; }
+    #qrcode img { margin: 0 auto; border: 8px solid white; border-radius: 15px; }
     
     .pix-area {
-      background: #f1f5f9; padding: 15px; border-radius: 15px; border: 2px dashed #cbd5e1;
+      background: #f1f5f9; padding: 15px; border-radius: 12px; border: 2px dashed #cbd5e1;
+      font-size: 11px; word-break: break-all; color: #475569; font-family: monospace; cursor: pointer;
     }
-    .pix-box { font-size: 12px; word-break: break-all; color: #475569; font-family: monospace; cursor: pointer; }
 
-    .msg { font-size: 14px; margin-top: 20px; display: none; padding: 15px; border-radius: 15px; font-weight: 600; text-align: center; }
+    .msg { font-size: 13px; margin-top: 20px; display: none; padding: 14px; border-radius: 14px; font-weight: 600; text-align: center; }
     .err { background: #fef2f2; color: #dc2626; border: 1px solid #fee2e2; }
+    .success { background: #f0fdf4; color: #16a34a; border: 1px solid #dcfce7; }
   </style>
 </head>
 <body>
 
 <div class="login-container">
-  <img src="img/logo_oficial .png" alt="Logo Viana" class="brand-logo">
+  <img src="img/logo_oficial .png" alt="Logo" class="brand-logo">
   <h1>Viana Controle</h1>
-  <p class="subtitle">Gestão financeira simplificada</p>
+  <p class="subtitle">Faça login ou libere seu acesso</p>
 
   <div class="tabs-nav">
     <button class="tab-btn active" id="btn-tab-login" onclick="switchTab('login')">Entrar</button>
-    <button class="tab-btn" id="btn-tab-pagamento" onclick="switchTab('pagamento')">Liberar Acesso</button>
+    <button class="tab-btn" id="btn-tab-pagamento" onclick="switchTab('pagamento')">Liberação</button>
   </div>
 
   <div id="section-login" class="content-section active">
     <div class="input-group">
       <label>E-mail</label>
-      <input type="email" id="email" placeholder="nome@exemplo.com">
+      <input type="email" id="email" placeholder="exemplo@email.com">
     </div>
     <div class="input-group">
       <label>Senha</label>
       <input type="password" id="senha" placeholder="••••••••">
     </div>
-    <button class="btn btn-login" id="btnLogin">Acessar Minha Conta</button>
+    <button class="btn btn-login" id="btnLogin">Acessar Sistema</button>
   </div>
 
   <div id="section-pagamento" class="content-section">
-    <div style="background: #eff6ff; padding: 15px; border-radius: 15px; margin-bottom: 20px;">
-        <p style="font-size: 13px; margin: 0; color: #1e40af; line-height: 1.5;">
-            💎 <b>Acesso Vitalício:</b> Pague uma única vez <b>R$ 5,00</b> e use para sempre.
-        </p>
+    <div style="background: #eff6ff; padding: 15px; border-radius: 14px; margin-bottom: 20px; color: #1e40af; font-size: 13px; line-height: 1.4;">
+      💎 <b>Taxa Única: R$ 5,00</b>. Acesso vitalício liberado após envio do comprovante.
     </div>
     
-    <button class="btn btn-pix" onclick="gerarPix()">
-      <span>⚡</span> Gerar QR Code Pix
-    </button>
+    <button class="btn btn-pix" onclick="gerarPix()">⚡ Gerar QR Code Pix</button>
     
     <div id="qrcode"></div>
     
     <div id="pix-area-container" style="display:none; margin-top: 15px;">
-        <div class="pix-area">
-            <div class="pix-box" id="pix-text" onclick="copiarPix()"></div>
-        </div>
-        <p style="font-size: 11px; color: #64748b; text-align: center; margin-top: 8px;">Toque no código acima para copiar</p>
+        <div class="pix-area" id="pix-text" onclick="copiarPix()"></div>
+        <p style="font-size: 10px; color: #64748b; text-align: center; margin-top: 8px;">Clique acima para copiar o código</p>
     </div>
 
     <div class="input-group" style="margin-top:20px;">
-        <label>Seu nome (para identificar o pagamento)</label>
-        <input type="text" id="nome-usuario" placeholder="Digite seu nome completo" onkeyup="validarZap()">
+        <label>Nome do Usuário</label>
+        <input type="text" id="nome-usuario" placeholder="Seu nome completo" onkeyup="validarZap()">
     </div>
-    <button id="btn-whatsapp" class="btn btn-whatsapp" onclick="enviarZap()">
-       📲 Enviar Comprovante
-    </button>
+    <button id="btn-whatsapp" class="btn btn-whatsapp" onclick="enviarZap()">📲 Enviar Comprovante</button>
   </div>
 
-  <div id="feedback" class="msg err"></div>
+  <div id="feedback" class="msg"></div>
 </div>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getAuth, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-  import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyAjgQTdQmo63-0mR8k1bVYsY0E8I7Iqbnk",
@@ -188,51 +164,59 @@
   const auth = getAuth(app);
   const db = getFirestore(app);
 
+  // Registro do SW para PWA
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js').catch(err => console.log("Erro SW:", err));
+      navigator.serviceWorker.register('./sw.js').catch(() => {});
     });
   }
 
-  // --- LOGIN ---
+  // LÓGICA DE LOGIN/CADASTRO
   document.getElementById('btnLogin').onclick = async () => {
-    const email = document.getElementById('email').value;
+    const email = document.getElementById('email').value.trim();
     const senha = document.getElementById('senha').value;
     const fb = document.getElementById('feedback');
     const btn = document.getElementById('btnLogin');
 
     if(!email || !senha) {
-        fb.textContent = "⚠️ Informe seu e-mail e senha.";
-        fb.style.display = "block";
+        fb.textContent = "⚠️ Informe os dados de acesso.";
+        fb.className = "msg err"; fb.style.display = "block";
         return;
     }
 
-    btn.disabled = true;
-    btn.innerHTML = "Verificando...";
-    fb.style.display = "none";
+    btn.disabled = true; btn.textContent = "Processando..."; fb.style.display = "none";
 
     try {
-      const userRes = await signInWithEmailAndPassword(auth, email, senha);
-      const userDoc = await getDoc(doc(db, "usuarios", userRes.user.uid));
+      let userRes;
+      try {
+        userRes = await signInWithEmailAndPassword(auth, email, senha);
+      } catch (err) {
+        if (err.code === 'auth/user-not-found' || err.code === 'auth/invalid-credential') {
+          // Tenta criar conta se não encontrar ou falhar a primeira vez
+          userRes = await createUserWithEmailAndPassword(auth, email, senha);
+          await setDoc(doc(db, "usuarios", userRes.user.uid), { email, aprovado: false });
+        } else { throw err; }
+      }
 
+      const userDoc = await getDoc(doc(db, "usuarios", userRes.user.uid));
+      
       if (userDoc.exists() && userDoc.data().aprovado === true) {
         window.location.href = "index.html";
       } else {
-        fb.textContent = "⏳ Pagamento em análise ou não realizado.";
-        fb.style.display = "block";
+        fb.textContent = "✅ Conta pronta! Agora realize o pagamento para liberar.";
+        fb.className = "msg success"; fb.style.display = "block";
         switchTab('pagamento');
         await signOut(auth);
       }
     } catch (e) {
-      fb.textContent = "❌ Dados de acesso inválidos.";
-      fb.style.display = "block";
+      fb.textContent = "❌ Verifique seus dados ou tente novamente.";
+      fb.className = "msg err"; fb.style.display = "block";
     } finally {
-      btn.disabled = false;
-      btn.innerHTML = "Acessar Minha Conta";
+      btn.disabled = false; btn.textContent = "Acessar Sistema";
     }
   };
 
-  // --- INTERFACE ---
+  // INTERFACE E PIX
   const PIX_STRING = "00020126360014BR.GOV.BCB.PIX0114+551999679685152040000530398654045.005802BR5901N6001C62070503***63049D51";
 
   window.switchTab = (tab) => {
@@ -244,17 +228,16 @@
   };
 
   window.gerarPix = () => {
-    const qrContainer = document.getElementById('qrcode');
-    qrContainer.style.display = "block";
-    qrContainer.innerHTML = "";
-    new QRCode(qrContainer, { text: PIX_STRING, width: 180, height: 180, colorDark: "#1e293b" });
+    const qrCont = document.getElementById('qrcode');
+    qrCont.style.display = "block"; qrCont.innerHTML = "";
+    new QRCode(qrCont, { text: PIX_STRING, width: 170, height: 170 });
     document.getElementById('pix-text').textContent = PIX_STRING;
     document.getElementById('pix-area-container').style.display = "block";
   };
 
   window.copiarPix = () => {
     navigator.clipboard.writeText(PIX_STRING);
-    alert("✅ Copiado! Cole no seu aplicativo do banco.");
+    alert("Código Pix Copiado!");
   };
 
   window.validarZap = () => {
@@ -264,7 +247,7 @@
 
   window.enviarZap = () => {
     const nome = document.getElementById('nome-usuario').value;
-    const msg = encodeURIComponent(`Olá! Realizei o pagamento de R$ 5,00. Meu nome: ${nome}. Aguardo liberação do Viana Controle.`);
+    const msg = encodeURIComponent(`Olá! Fiz o pagamento de R$ 5,00. Nome: ${nome}. Aguardo liberação.`);
     window.open(`https://wa.me/5519996796851?text=${msg}`, '_blank');
   };
 </script>
