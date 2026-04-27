@@ -5,13 +5,11 @@
   <title>Viana Controle</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="manifest" href="manifest.json">
-  <link rel="icon" href="./img/logo_oficial .png" type="image/png">
   <style>
     :root {
       --bg: #f8fafc; --card: #ffffff; --text: #0f172a; --muted: #64748b;
       --border: #e2e8f0; --primary: #3b82f6;
-      --vencida: #ef4444; --paga: #10b981; --shadow: 0 1px 3px rgba(0,0,0,0.1);
+      --vencida: #ef4444; --paga: #10b981; --info: #6366f1; --shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
     }
     @media (prefers-color-scheme: dark) {
       :root { --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --muted: #94a3b8;
@@ -22,44 +20,60 @@
     .app { width: 100%; max-width: 420px; }
 
     header { margin-bottom: 20px; text-align: center; }
-    h1 { font-size: 22px; font-weight: 700; color: var(--primary); margin-bottom: 15px; }
+    h1 { font-size: 24px; font-weight: 800; color: var(--primary); margin-bottom: 15px; }
     
     .month-nav {
-      display: flex; align-items: center; justify-content: center; gap: 14px;
-      background: var(--card); padding: 12px; border-radius: 14px; box-shadow: var(--shadow); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      background: var(--card); padding: 10px; border-radius: 14px; box-shadow: var(--shadow); border: 1px solid var(--border);
     }
-    .month-nav button { width: 40px; height: 40px; border: none; background: var(--bg); border-radius: 8px; cursor: pointer; color: var(--text); font-size: 18px; }
-    #month-label { font-weight: 700; text-transform: capitalize; min-width: 140px; text-align: center; font-size: 15px; }
+    .month-nav button { width: 40px; height: 40px; border: none; background: var(--bg); border-radius: 10px; cursor: pointer; color: var(--text); font-size: 18px; }
+    #month-label { font-weight: 700; text-transform: capitalize; font-size: 15px; }
 
-    .card { background: var(--card); border-radius: 16px; padding: 16px; margin: 20px 0; border: 1px solid var(--border); box-shadow: var(--shadow); }
+    .resumo-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin: 20px 0; }
+    .resumo-item { background: var(--card); padding: 12px 8px; border-radius: 12px; border: 1px solid var(--border); text-align: center; box-shadow: var(--shadow); }
+    .resumo-item label { display: block; font-size: 9px; font-weight: 700; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+    .resumo-item span { font-size: 13px; font-weight: 700; display: block; }
+
+    .card { background: var(--card); border-radius: 16px; padding: 16px; margin-bottom: 20px; border: 1px solid var(--border); box-shadow: var(--shadow); }
     form { display: grid; gap: 12px; }
     label { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; }
-    input { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 10px; background: var(--bg); color: var(--text); font-size: 16px; outline: none; }
-    input:focus { border-color: var(--primary); }
+    input { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 10px; background: var(--bg); color: var(--text); font-size: 16px; outline: none; transition: 0.2s; }
+    input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
     .row { display: grid; grid-template-columns: 2fr 1fr; gap: 10px; }
-    .btn { width: 100%; padding: 14px; border: none; border-radius: 12px; background: var(--primary); color: white; font-weight: 700; cursor: pointer; font-size: 15px; }
+    
+    /* EFEITO NO BOTÃO */
+    .btn { width: 100%; padding: 14px; border: none; border-radius: 12px; background: var(--primary); color: white; font-weight: 700; cursor: pointer; font-size: 15px; transition: all 0.2s ease; }
+    .btn:active { transform: scale(0.96); opacity: 0.9; }
+    .btn-loading { background: var(--muted); pointer-events: none; }
 
     .lista-container { background: var(--card); border-radius: 16px; border: 1px solid var(--border); overflow: hidden; box-shadow: var(--shadow); }
-    .item { display: flex; justify-content: space-between; align-items: center; padding: 16px; border-bottom: 1px solid var(--border); transition: 0.3s; }
-    .item:last-child { border-bottom: none; }
-
-    /* Estilos de Status */
+    
+    /* ANIMAÇÃO DE ENTRADA DOS ITENS */
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .item { 
+      display: flex; justify-content: space-between; align-items: center; 
+      padding: 16px; border-bottom: 1px solid var(--border); transition: 0.3s;
+      animation: slideIn 0.4s ease forwards;
+    }
+    
     .item.status-paga { border-left: 6px solid var(--paga); background: rgba(16, 185, 129, 0.04); }
-    .item.status-paga .name { color: var(--paga); text-decoration: line-through; opacity: 0.8; }
-
+    .item.status-paga .name { color: var(--muted); text-decoration: line-through; }
     .item.status-vencida { border-left: 6px solid var(--vencida); background: rgba(239, 68, 68, 0.04); }
-    .item.status-vencida .name { color: var(--vencida); font-weight: 700; }
 
     .name { font-weight: 600; font-size: 15px; display: flex; align-items: center; gap: 6px; }
-    .parcela-tag { font-size: 10px; background: var(--border); padding: 2px 6px; border-radius: 4px; color: var(--muted); font-weight: 500; text-decoration: none !important; }
+    .parcela-tag { font-size: 10px; background: var(--border); padding: 2px 6px; border-radius: 4px; color: var(--muted); }
     .meta { font-size: 12px; color: var(--muted); margin-top: 4px; }
-    .meta strong { color: var(--text); }
     
-    .btn-action { width: 38px; height: 38px; border: none; border-radius: 10px; background: var(--bg); border: 1px solid var(--border); cursor: pointer; font-size: 16px; }
-    .btn-sair { background: transparent; color: var(--muted); border: 1px solid var(--border); margin-top: 30px; font-weight: 500; }
+    .btn-action { width: 38px; height: 38px; border: none; border-radius: 10px; background: var(--bg); border: 1px solid var(--border); cursor: pointer; font-size: 16px; transition: 0.2s; }
+    .btn-action:hover { background: var(--border); }
+    .btn-sair { background: transparent; color: var(--muted); border: none; margin-top: 20px; width: 100%; font-size: 13px; text-decoration: underline; cursor: pointer; }
   </style>
 </head>
 <body>
+
 <div class="app">
   <header>
     <h1>Viana Controle</h1>
@@ -69,6 +83,21 @@
       <button id="next">→</button>
     </div>
   </header>
+
+  <div class="resumo-grid">
+    <div class="resumo-item" style="border-bottom: 3px solid var(--info);">
+      <label>Total Mês</label>
+      <span id="total-mes" style="color: var(--text);">R$ 0,00</span>
+    </div>
+    <div class="resumo-item" style="border-bottom: 3px solid var(--vencida);">
+      <label>Restante</label>
+      <span id="total-pendente" style="color: var(--vencida);">R$ 0,00</span>
+    </div>
+    <div class="resumo-item" style="border-bottom: 3px solid var(--paga);">
+      <label>Já Pago</label>
+      <span id="total-pago" style="color: var(--paga);">R$ 0,00</span>
+    </div>
+  </div>
 
   <div class="card">
     <form id="form">
@@ -80,7 +109,7 @@
       </div>
       <label>Data de Vencimento</label>
       <input type="date" id="data" required />
-      <button class="btn">Adicionar Conta</button>
+      <button type="submit" id="btn-submit" class="btn">Adicionar Conta</button>
     </form>
   </div>
 
@@ -94,15 +123,18 @@
   import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
   const config = {
-    apiKey: "AIzaSyAjgQTdQmo63-0mR8k1bVYsY0E8I7Iqbnk", authDomain: "will-gasto.firebaseapp.com",
-    projectId: "will-gasto", storageBucket: "will-gasto.firebasestorage.app",
-    messagingSenderId: "436819384776", appId: "1:436819384776:web:37c4c1173c543c0d1dc8fd"
+    apiKey: "AIzaSyAjgQTdQmo63-0mR8k1bVYsY0E8I7Iqbnk", 
+    authDomain: "will-gasto.firebaseapp.com",
+    projectId: "will-gasto", 
+    storageBucket: "will-gasto.firebasestorage.app",
+    messagingSenderId: "436819384776", 
+    appId: "1:436819384776:web:37c4c1173c543c0d1dc8fd"
   };
 
   const app = initializeApp(config), db = getFirestore(app), auth = getAuth(app);
   let uid = null, allData = [], selectedMonth = new Date().toISOString().slice(0, 7);
 
-  const formatarMoeda = (valor) => valor.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const formatarMoeda = (v) => v.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
 
   onAuthStateChanged(auth, user => user ? (uid = user.uid, loadData()) : window.location.href = "login.html");
 
@@ -127,65 +159,100 @@
     document.getElementById('month-label').textContent = new Date(selectedMonth + '-02').toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
 
     const hoje = new Date().toISOString().slice(0, 10);
+    let somaTotal = 0, somaPendente = 0, somaPago = 0;
     box.innerHTML = '';
 
     if(monthData.length === 0) {
         box.innerHTML = '<div style="padding:40px; text-align:center; color:var(--muted); font-size:14px;">Nenhuma conta este mês.</div>';
+        atualizarResumo(0, 0, 0);
         return;
     }
 
-    monthData.forEach(item => {
+    monthData.forEach((item, index) => {
+      somaTotal += item.value;
+      if (item.paid) somaPago += item.value;
+      else somaPendente += item.value;
+
       const dia = item.date.split('-')[2];
       const estaVencida = item.date < hoje && !item.paid;
       const statusClass = item.paid ? 'status-paga' : (estaVencida ? 'status-vencida' : '');
-      const tagParc = item.totalParc > 1 ? `<span class="parcela-tag">${item.nParc}/${item.totalParc}</span>` : '';
-
+      
       const div = document.createElement('div');
       div.className = `item ${statusClass}`;
+      // Adiciona um pequeno atraso na animação para cada item
+      div.style.animationDelay = `${index * 0.05}s`;
+      
       div.innerHTML = `
         <div>
-          <div class="name">${item.desc} ${tagParc} ${estaVencida ? '⚠️' : ''}</div>
+          <div class="name">${item.desc} ${item.totalParc > 1 ? `<span class="parcela-tag">${item.nParc}/${item.totalParc}</span>` : ''} ${estaVencida ? '⚠️' : ''}</div>
           <div class="meta">Dia ${dia} • <strong>R$ ${formatarMoeda(item.value)}</strong></div>
         </div>
         <div style="display:flex; gap:10px">
-          ${!item.paid ? `<button class="btn-action" onclick="marcar('${item.docId}','${item.id}')">✅</button>` : ''}
+          <button class="btn-action" onclick="toggleStatus('${item.docId}','${item.id}')">${item.paid ? '↩️' : '✅'}</button>
           <button class="btn-action" onclick="excluir('${item.docId}')">🗑️</button>
         </div>`;
       box.appendChild(div);
     });
+
+    atualizarResumo(somaTotal, somaPendente, somaPago);
   }
 
-  window.marcar = async (docId, pId) => {
+  function atualizarResumo(total, pendente, pago) {
+    document.getElementById('total-mes').textContent = `R$ ${formatarMoeda(total)}`;
+    document.getElementById('total-pendente').textContent = `R$ ${formatarMoeda(pendente)}`;
+    document.getElementById('total-pago').textContent = `R$ ${formatarMoeda(pago)}`;
+  }
+
+  window.toggleStatus = async (docId, pId) => {
     const ref = doc(db, "despesas", docId), snap = await getDoc(ref);
-    if (snap.exists()) await updateDoc(ref, { parcelas: snap.data().parcelas.map(p => p.id === pId ? { ...p, paid: true } : p) });
+    if (snap.exists()) {
+      const novasParcelas = snap.data().parcelas.map(p => p.id === pId ? { ...p, paid: !p.paid } : p);
+      await updateDoc(ref, { parcelas: novasParcelas });
+    }
   };
 
   window.excluir = async (id) => { if(confirm('Apagar esta conta?')) await deleteDoc(doc(db, "despesas", id)); };
 
   document.getElementById('form').onsubmit = async e => {
     e.preventDefault();
+    const btn = document.getElementById('btn-submit');
+    
+    // Efeito Visual de Loading no Botão
+    const originalText = btn.textContent;
+    btn.textContent = "Salvando...";
+    btn.classList.add('btn-loading');
+
     const desc = document.getElementById('desc').value;
     const valor = parseFloat(document.getElementById('valor').value);
     const qtd = parseInt(document.getElementById('qtd').value) || 1;
     const [y, m, d] = document.getElementById('data').value.split('-').map(Number);
+    
     const parcelas = [];
     for(let i=0; i<qtd; i++) {
       const dt = new Date(y, m-1+i, d);
       parcelas.push({ id: Math.random().toString(36).slice(2,9), value: valor, date: dt.toISOString().slice(0,10), paid: false });
     }
-    await addDoc(collection(db, "despesas"), { desc, parcelas, userId: uid });
-    e.target.reset();
+
+    try {
+      await addDoc(collection(db, "despesas"), { desc, parcelas, userId: uid });
+      e.target.reset();
+    } catch (err) {
+      alert("Erro ao salvar!");
+    } finally {
+      // Volta o botão ao normal
+      btn.textContent = originalText;
+      btn.classList.remove('btn-loading');
+    }
   };
 
   document.getElementById('prev').onclick = () => changeMonth(-1);
   document.getElementById('next').onclick = () => changeMonth(1);
   function changeMonth(dir) {
     const [y, m] = selectedMonth.split('-').map(Number);
-    const d = new Date(y, m-1+dir, 1);
-    selectedMonth = d.toISOString().slice(0, 7);
+    selectedMonth = new Date(y, m-1+dir, 1).toISOString().slice(0, 7);
     render();
   }
-  document.getElementById('sair').onclick = () => signOut(auth);
+  document.getElementById('sair').onclick = () => confirm('Sair?') && signOut(auth);
 </script>
 </body>
 </html>
