@@ -36,19 +36,33 @@
 
     .card { background: var(--card); border-radius: 16px; padding: 16px; margin-bottom: 20px; border: 1px solid var(--border); box-shadow: var(--shadow); }
     form { display: grid; gap: 12px; }
-    label { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; }
-    input { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 10px; background: var(--bg); color: var(--text); font-size: 16px; outline: none; transition: 0.2s; }
-    input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
-    .row { display: grid; grid-template-columns: 2fr 1fr; gap: 10px; }
+    label { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; display: block; margin-bottom: 4px; }
     
-    /* EFEITO NO BOTÃO */
-    .btn { width: 100%; padding: 14px; border: none; border-radius: 12px; background: var(--primary); color: white; font-weight: 700; cursor: pointer; font-size: 15px; transition: all 0.2s ease; }
+    /* INPUTS GERAIS */
+    input { 
+      width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 10px; 
+      background: var(--bg); color: var(--text); font-size: 16px; outline: none; transition: 0.2s; 
+      text-align: center; /* Centraliza o texto em todos os inputs */
+    }
+    input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
+    
+    /* AJUSTE ESPECÍFICO PARA DATA */
+    input[type="date"] {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      appearance: none; /* Remove estilos padrão de alguns browsers */
+    }
+
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    
+    .btn { width: 100%; padding: 14px; border: none; border-radius: 12px; background: var(--primary); color: white; font-weight: 700; cursor: pointer; font-size: 15px; transition: all 0.2s ease; margin-top: 5px; }
     .btn:active { transform: scale(0.96); opacity: 0.9; }
     .btn-loading { background: var(--muted); pointer-events: none; }
 
     .lista-container { background: var(--card); border-radius: 16px; border: 1px solid var(--border); overflow: hidden; box-shadow: var(--shadow); }
     
-    /* ANIMAÇÃO DE ENTRADA DOS ITENS */
     @keyframes slideIn {
       from { opacity: 0; transform: translateY(15px); }
       to { opacity: 1; transform: translateY(0); }
@@ -70,6 +84,8 @@
     .btn-action { width: 38px; height: 38px; border: none; border-radius: 10px; background: var(--bg); border: 1px solid var(--border); cursor: pointer; font-size: 16px; transition: 0.2s; }
     .btn-action:hover { background: var(--border); }
     .btn-sair { background: transparent; color: var(--muted); border: none; margin-top: 20px; width: 100%; font-size: 13px; text-decoration: underline; cursor: pointer; }
+    
+    .field-group { text-align: center; } /* Centraliza as labels também */
   </style>
 </head>
 <body>
@@ -101,14 +117,18 @@
 
   <div class="card">
     <form id="form">
-      <label>O que comprou?</label>
-      <input type="text" id="desc" placeholder="Ex: Mercado" required />
-      <div class="row">
-        <div><label>Valor (R$)</label><input type="number" id="valor" step="0.01" inputmode="decimal" required /></div>
-        <div><label>Parcelas</label><input type="number" id="qtd" value="1" min="1" /></div>
+      <div class="field-group">
+        <label>O que comprou?</label>
+        <input type="text" id="desc" placeholder="Ex: Mercado" required />
       </div>
-      <label>Data de Vencimento</label>
-      <input type="date" id="data" required />
+      <div class="row">
+        <div class="field-group"><label>Valor (R$)</label><input type="number" id="valor" step="0.01" inputmode="decimal" required /></div>
+        <div class="field-group"><label>Parcelas</label><input type="number" id="qtd" value="1" min="1" /></div>
+      </div>
+      <div class="field-group">
+        <label>Data de Vencimento</label>
+        <input type="date" id="data" required />
+      </div>
       <button type="submit" id="btn-submit" class="btn">Adicionar Conta</button>
     </form>
   </div>
@@ -179,7 +199,6 @@
       
       const div = document.createElement('div');
       div.className = `item ${statusClass}`;
-      // Adiciona um pequeno atraso na animação para cada item
       div.style.animationDelay = `${index * 0.05}s`;
       
       div.innerHTML = `
@@ -216,8 +235,6 @@
   document.getElementById('form').onsubmit = async e => {
     e.preventDefault();
     const btn = document.getElementById('btn-submit');
-    
-    // Efeito Visual de Loading no Botão
     const originalText = btn.textContent;
     btn.textContent = "Salvando...";
     btn.classList.add('btn-loading');
@@ -239,7 +256,6 @@
     } catch (err) {
       alert("Erro ao salvar!");
     } finally {
-      // Volta o botão ao normal
       btn.textContent = originalText;
       btn.classList.remove('btn-loading');
     }
